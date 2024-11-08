@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         child: Center(
           child: Image.asset(
-            'assets/img1.jpg', // Make sure to add this image to pubspec.yaml
+            'assets/img1.jpg', 
             width: 195.57,
             height: 46.66,
           ),

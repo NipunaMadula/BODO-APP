@@ -10,7 +10,7 @@ class SignUpScreen extends StatelessWidget {
         title: const Text('Sign Up'),
       ),
       body: const Center(
-        child: Text('Sign Up Screen - Add your form here'),
+        child: Text('Sign Up Screen'),
       ),
     );
   }
