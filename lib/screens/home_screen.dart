@@ -12,10 +12,9 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-           
+
             const SizedBox(height: 60),
-            
-          
+   
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
               width: double.infinity,
@@ -23,24 +22,56 @@ class HomeScreen extends StatelessWidget {
                 'BODO APP',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 28,
+                  color: Colors.lightBlueAccent,
+                  fontSize: 48,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1.2,
                 ),
               ),
             ),
 
-           
-            const Spacer(),
-            
-  
+            const Spacer(flex: 2),
+ 
+            const SizedBox(height: 250),
+       
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                children: const [
+                  Text(
+                    'BOARDING ACCOMADATION FINDER',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      height: 1.2,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Assists users in finding economical accommodations near their workplace or educational institution',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.blueGrey,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            const Spacer(flex: 1),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-              
+  
                   SizedBox(
                     width: 342,
                     height: 60,
@@ -62,17 +93,13 @@ class HomeScreen extends StatelessWidget {
                       child: const Text(
                         'Register',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
-
-                 
                   const SizedBox(height: 16),
-
-                 
                   SizedBox(
                     width: 342,
                     height: 60,
@@ -94,7 +121,7 @@ class HomeScreen extends StatelessWidget {
                       child: const Text(
                         'Sign in',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -104,8 +131,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             
-            
-            const SizedBox(height: 40),
+            const SizedBox(height: 60),
           ],
         ),
       ),
