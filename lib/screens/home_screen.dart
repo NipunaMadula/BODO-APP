@@ -23,17 +23,24 @@ class HomeScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
-                  fontSize: 48,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.2,
+                  fontSize: 50,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.6,
                 ),
               ),
             ),
 
-            const Spacer(flex: 2),
- 
-            const SizedBox(height: 250),
-       
+            const Spacer(flex: 1), 
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: Image.asset(
+                'assets/img2.jpg',
+                height: 200, 
+                fit: BoxFit.contain,
+              ),
+            ),
+            
+            const SizedBox(height: 60),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
@@ -62,7 +69,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
 
             const Spacer(flex: 1),
 
@@ -131,7 +138,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 60),
+            const SizedBox(height: 50),
           ],
         ),
       ),
