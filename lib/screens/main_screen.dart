@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
-import 'signin_screen.dart';
+import 'login_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -114,7 +114,7 @@ class MainScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SignInScreen()),
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
