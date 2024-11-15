@@ -13,7 +13,7 @@ class MainScreen extends StatelessWidget {
         child: Column(
           children: [
 
-            const SizedBox(height: 60),
+            const SizedBox(height: 50),
    
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -24,7 +24,7 @@ class MainScreen extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
                   fontSize: 50,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w800,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -34,8 +34,8 @@ class MainScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Image.asset(
-                'assets/img2.jpg',
-                height: 200, 
+                'assets/main_logo.jpg',
+                height: 250, 
                 fit: BoxFit.contain,
               ),
             ),
