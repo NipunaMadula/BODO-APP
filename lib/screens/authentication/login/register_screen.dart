@@ -124,7 +124,7 @@ class RegisterScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
             
             const Center(
               child: Text(

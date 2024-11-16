@@ -36,7 +36,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 35),
+            const SizedBox(height: 40),
             
     
             const Text(
@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 40),
+            const SizedBox(height: 45),
 
             TextField(
               decoration: InputDecoration(
@@ -121,6 +121,7 @@ class LoginScreen extends StatelessWidget {
                 child: const Text(
                   'Log In',
                   style: TextStyle(
+                    color: Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
@@ -128,7 +129,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 34),
        
             const Row(
               children: [
@@ -148,9 +149,9 @@ class LoginScreen extends StatelessWidget {
               children: [
     
                 Container(
-                  width: 150,
-                  height: 56,
-                  margin: const EdgeInsets.only(right: 8),
+                  width: 70,
+                  height: 44,
+                  margin: const EdgeInsets.only(right: 60),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(15),
@@ -162,9 +163,9 @@ class LoginScreen extends StatelessWidget {
                 ),
   
                 Container(
-                  width: 150,
-                  height: 56,
-                  margin: const EdgeInsets.only(left: 8),
+                  width: 70,
+                  height: 45,
+                  margin: const EdgeInsets.only(left: 10),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(15),
@@ -177,7 +178,7 @@ class LoginScreen extends StatelessWidget {
               ],
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 34),
      
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -194,7 +195,7 @@ class LoginScreen extends StatelessWidget {
                   );
                   },
                   child: const Text(
-                    'Register',
+                    '  Register',
                     style: TextStyle(
                       color: Colors.lightBlueAccent,
                       fontWeight: FontWeight.bold,
