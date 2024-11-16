@@ -30,8 +30,8 @@ class PasswordChangedScreen extends StatelessWidget {
                 'BODO APP',
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -54,7 +54,7 @@ class PasswordChangedScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 30),
             
             
             const Text(
@@ -78,7 +78,7 @@ class PasswordChangedScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 50),
             
             // Back to Login Button
             SizedBox(
@@ -102,6 +102,7 @@ class PasswordChangedScreen extends StatelessWidget {
                 child: const Text(
                   'Back to Login',
                   style: TextStyle(
+                    color: Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
@@ -109,7 +110,7 @@ class PasswordChangedScreen extends StatelessWidget {
               ),
             ),
 
-            const Spacer(flex: 2),
+            const Spacer(flex: 5),
           ],
         ),
       ),

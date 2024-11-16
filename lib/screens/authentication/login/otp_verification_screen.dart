@@ -1,7 +1,7 @@
 // lib/screens/otp_verification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../home/home_screen.dart';
+import 'login_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({super.key});
@@ -45,7 +45,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       // Navigate to HomeScreen after verification
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
         (route) => false,
       );
     } else {
@@ -82,8 +82,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 'BODO APP',
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -214,6 +214,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 child: const Text(
                   'Verify',
                   style: TextStyle(
+                    color: Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),

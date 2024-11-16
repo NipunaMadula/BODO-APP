@@ -27,8 +27,8 @@ class VerifyScreen extends StatelessWidget {
                 'BODO APP',
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -120,6 +120,7 @@ class VerifyScreen extends StatelessWidget {
                 child: const Text(
                   'Verify',
                   style: TextStyle(
+                    color:Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),

@@ -31,8 +31,8 @@ class ThankYouScreen extends StatelessWidget {
                 'BODO APP',
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -83,7 +83,7 @@ class ThankYouScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 50),
 
 
             Center(

@@ -73,8 +73,8 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                 'BODO APP',
                 style: TextStyle(
                   color: Colors.lightBlueAccent,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                 ),
               ),
@@ -174,6 +174,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                 child: const Text(
                   'Reset Password',
                   style: TextStyle(
+                    color: Colors.black,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
