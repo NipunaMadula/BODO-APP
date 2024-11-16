@@ -55,6 +55,14 @@ flutter:
     - assets/new2.png
     - assets/new3.png
     - assets/splash_logo.png
+    - assets/home/image1.jpeg
+    - assets/home/image2.jpeg
+    - assets/home/image3.jpeg
+    - assets/home/image4.jpeg
+    - assets/home/image5.jpeg
+    - assets/home/image6.jpeg
+
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
