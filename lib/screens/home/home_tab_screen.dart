@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import '../chat/chat_screen.dart';
+import '../post_ad/post_ad_screen.dart';  // Update this import
 import '../notification/notification_screen.dart';
 import '../profile/profile_screen.dart';
 
@@ -16,7 +16,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const ChatScreen(),
+    const PostAdScreen(),  // Changed from ChatScreen
     const NotificationScreen(),
     const ProfileScreen(),
   ];
@@ -42,7 +42,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline),
+            icon: Icon(Icons.add_circle_outline),  // Changed icon
             label: '',
           ),
           BottomNavigationBarItem(
