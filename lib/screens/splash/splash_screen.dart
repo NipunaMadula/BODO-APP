@@ -28,11 +28,11 @@ class _SplashScreenState extends State<SplashScreen> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 97, 176, 212),
+          color: Color.fromARGB(255, 50, 169, 224),
         ),
         child: Center(
           child: Image.asset(
-            'assets/splash_logo.png',
+            'assets/splash_logo_new.png',
             width: 150,
             height: 150,
           ),
