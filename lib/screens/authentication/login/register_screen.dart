@@ -101,10 +101,10 @@ class RegisterScreen extends StatelessWidget {
               height: 60,
               child: ElevatedButton(
                 onPressed: () {
-                   Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => const VerifyScreen()),
-                );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VerifyScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlueAccent,
@@ -125,64 +125,71 @@ class RegisterScreen extends StatelessWidget {
             ),
             
             const SizedBox(height: 25),
-            
-            const Center(
-              child: Text(
-                'Or login with',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 20),
-            
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
 
-                Container(
-                  width: 75,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Image.asset(
-                    'assets/google_logo.png',
-                    scale: 2.0,
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Colors.grey[300],
                   ),
                 ),
- 
-                Container(
-                  width: 75,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Image.asset(
-                    'assets/facebook_logo.png',
-                    scale: 2.0,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Or',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-  
-                Container(
-                  width: 75,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Image.asset(
-                    'assets/apple_logo.png',
-                    scale: 2.0,
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Colors.grey[300],
                   ),
                 ),
               ],
+            ),
+
+            const SizedBox(height: 20),
+
+            Container(
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    // TODO: Implement Google sign in
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/google_logo.png',
+                        height: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Log In with Google',
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
             
             const SizedBox(height: 25),

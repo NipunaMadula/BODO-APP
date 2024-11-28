@@ -23,7 +23,6 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             const Center(
               child: Text(
                 'BODO APP',
@@ -38,7 +37,6 @@ class LoginScreen extends StatelessWidget {
             
             const SizedBox(height: 40),
             
-    
             const Text(
               'Welcome back! Glad\nto see you, Again!',
               style: TextStyle(
@@ -85,8 +83,8 @@ class LoginScreen extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                    context,
+                    MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
                   );
                 },
                 child: const Text(
@@ -130,52 +128,71 @@ class LoginScreen extends StatelessWidget {
             ),
             
             const SizedBox(height: 34),
-       
-            const Row(
+
+            Row(
               children: [
-                Expanded(child: Divider()),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Or', style: TextStyle(color: Colors.grey)),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Colors.grey[300],
+                  ),
                 ),
-                Expanded(child: Divider()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Or',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Colors.grey[300],
+                  ),
+                ),
               ],
             ),
-            
+
             const SizedBox(height: 24),
-       
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-    
-                Container(
-                  width: 70,
-                  height: 44,
-                  margin: const EdgeInsets.only(right: 60),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Image.asset(
-                    'assets/google_logo.png',
-                    scale: 2.0,
+
+            Container(
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    // TODO: Implement Google sign in
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/google_logo.png',
+                        height: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Log In with Google',
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-  
-                Container(
-                  width: 70,
-                  height: 45,
-                  margin: const EdgeInsets.only(left: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Image.asset(
-                    'assets/apple_logo.png',
-                    scale: 2.0,
-                  ),
-                ),
-              ],
+              ),
             ),
             
             const SizedBox(height: 34),
@@ -190,9 +207,9 @@ class LoginScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const RegisterScreen()),
-                  );
+                      context,
+                      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                    );
                   },
                   child: const Text(
                     '  Register',
