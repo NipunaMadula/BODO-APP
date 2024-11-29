@@ -34,6 +34,18 @@ dependencies:
   collection: ^1.19.0
   meta: ^1.15.0
   cupertino_icons: ^1.0.8
+  http: ^1.2.1
+  firebase_core: ^3.2.0
+  firebase_messaging: ^15.0.3
+  firebase_auth: ^5.2.0
+  google_sign_in: ^6.2.1
+  firebase_analytics: ^11.3.0
+  firebase_database: ^11.1.1
+  cloud_firestore: ^5.4.0
+  intercom_flutter: ^9.2.0
+  firebase_storage: ^12.3.5
+  image_picker: ^1.1.2
+  connectivity_plus: ^4.0.0
 
 dev_dependencies:
   flutter_test:
