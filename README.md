@@ -2,6 +2,11 @@
 
 The **Boarding Accommodation App (BODO-APP)** mobile version connects users with affordable boarding options near their workplaces or universities. This mobile application provides a seamless and secure platform for users to search and register for accommodations, streamlining the boarding search and booking process.
 
+## Screenshots
+Below are the main UI screens of the BODO-APP:
+
+<div align="center"> <img src="assets/readme/MainUI.png" alt="Main UI" width="200" /> <img src="assets/readme/RegisterUI.png" alt="Register UI" width="200" /> <img src="assets/readme/LoginUI.png" alt="Login UI" width="200" /> <img src="assets/readme/HomeUI.png" alt="Home UI" width="200" /> </div>
+
 ## Features
 
 - **Search Listings**: Easily search for boarding accommodations by location, price, and proximity to universities or workplaces.
