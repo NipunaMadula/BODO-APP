@@ -1,4 +1,3 @@
-// lib/blocs/auth/auth_state.dart
 import 'package:bodo_app/models/user_model.dart';
 
 abstract class AuthState {}

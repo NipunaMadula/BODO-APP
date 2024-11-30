@@ -9,9 +9,8 @@ class AuthRepository {
   AuthRepository({
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
-  }) : 
-    _auth = auth ?? FirebaseAuth.instance,
-    _firestore = firestore ?? FirebaseFirestore.instance;
+  })  : _auth = auth ?? FirebaseAuth.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance;
 
   // Existing register method
   Future<UserModel> register(String email, String password) async {
@@ -19,7 +18,7 @@ class AuthRepository {
       email: email,
       password: password,
     );
-    
+
     final user = UserModel(
       id: credential.user!.uid,
       email: email,
@@ -40,12 +39,12 @@ class AuthRepository {
       email: email,
       password: password,
     );
-    
+
     final doc = await _firestore
         .collection('users')
         .doc(credential.user!.uid)
         .get();
-    
+
     return UserModel.fromFirestore(doc);
   }
 
