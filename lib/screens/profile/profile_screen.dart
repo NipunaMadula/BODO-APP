@@ -1,3 +1,4 @@
+import 'package:bodo_app/screens/authentication/login/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -144,6 +145,10 @@ class ProfileScreen extends StatelessWidget {
                   title: 'Logout',
                   textColor: Colors.red,
                   onTap: () {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
                     // TODO: Handle logout
                   },
                 ),

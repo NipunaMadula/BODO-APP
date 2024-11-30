@@ -1,58 +1,130 @@
 import 'package:bodo_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
+  final GoogleSignIn _googleSignIn;
 
   AuthRepository({
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
+    GoogleSignIn? googleSignIn,
   })  : _auth = auth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+        _firestore = firestore ?? FirebaseFirestore.instance,
+        _googleSignIn = googleSignIn ?? GoogleSignIn();
 
-  // Existing register method
   Future<UserModel> register(String email, String password) async {
-    final credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final user = UserModel(
-      id: credential.user!.uid,
-      email: email,
-      createdAt: DateTime.now(),
-    );
+      final user = UserModel(
+        id: credential.user!.uid,
+        email: email,
+        createdAt: DateTime.now(),
+      );
 
-    await _firestore
-        .collection('users')
-        .doc(user.id)
-        .set(user.toMap());
+      await _firestore
+          .collection('users')
+          .doc(user.id)
+          .set(user.toMap());
 
-    return user;
+      return user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        throw 'The password provided is too weak';
+      } else if (e.code == 'email-already-in-use') {
+        throw 'An account already exists for that email';
+      } else {
+        throw 'Registration failed: ${e.message}';
+      }
+    } catch (e) {
+      throw 'Registration failed: $e';
+    }
   }
 
-  // Add login method
   Future<UserModel> login(String email, String password) async {
-    final credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final doc = await _firestore
-        .collection('users')
-        .doc(credential.user!.uid)
-        .get();
+      final doc = await _firestore
+          .collection('users')
+          .doc(credential.user!.uid)
+          .get();
 
-    return UserModel.fromFirestore(doc);
+      return UserModel.fromFirestore(doc);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw 'No user found for that email';
+      } else if (e.code == 'wrong-password') {
+        throw 'Wrong password provided';
+      } else {
+        throw 'Login failed: ${e.message}';
+      }
+    } catch (e) {
+      throw 'Login failed: $e';
+    }
   }
 
-  // Add sign out method
+  Future<UserModel> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) throw 'Google sign in aborted';
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      
+      // Check if user exists in Firestore
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        // Create new user document if doesn't exist
+        final user = UserModel(
+          id: userCredential.user!.uid,
+          email: userCredential.user!.email!,
+          createdAt: DateTime.now(),
+        );
+
+        await _firestore
+            .collection('users')
+            .doc(user.id)
+            .set(user.toMap());
+
+        return user;
+      }
+
+      return UserModel.fromFirestore(userDoc);
+    } catch (e) {
+      throw 'Google sign in failed: $e';
+    }
+  }
+
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      await Future.wait([
+        _auth.signOut(),
+        _googleSignIn.signOut(),
+      ]);
+    } catch (e) {
+      throw 'Sign out failed: $e';
+    }
   }
 
-  // Add current user stream
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 }

@@ -15,3 +15,10 @@ class AuthError extends AuthState {
   final String error;
   AuthError(this.error);
 }
+
+class AuthenticatedState extends AuthState {
+  final UserModel user;
+  AuthenticatedState(this.user);
+}
+
+class UnauthenticatedState extends AuthState {}

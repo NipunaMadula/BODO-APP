@@ -13,15 +13,22 @@ class UserModel {
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return UserModel(
-      id: doc.id,
-      email: data['email'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-    );
+    try {
+      return UserModel(
+        id: doc.id,
+        email: data['email'] ?? '',
+        createdAt: (data['createdAt'] as Timestamp).toDate(),
+      );
+    } catch (e) {
+      throw 'Error parsing user data: $e';
+    }
   }
 
   Map<String, dynamic> toMap() => {
     'email': email,
     'createdAt': Timestamp.fromDate(createdAt),
   };
+
+  @override
+  String toString() => 'UserModel(id: $id, email: $email, createdAt: $createdAt)';
 }
