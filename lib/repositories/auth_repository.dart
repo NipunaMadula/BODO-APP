@@ -26,6 +26,8 @@ class AuthRepository {
       final user = UserModel(
         id: credential.user!.uid,
         email: email,
+        name: null, // Will be updated in verify screen
+        phone: null, // Will be updated in verify screen
         createdAt: DateTime.now(),
       );
 
@@ -98,6 +100,8 @@ class AuthRepository {
         final user = UserModel(
           id: userCredential.user!.uid,
           email: userCredential.user!.email!,
+          name: userCredential.user!.displayName, // Get name from Google
+          phone: null,
           createdAt: DateTime.now(),
         );
 
@@ -112,6 +116,21 @@ class AuthRepository {
       return UserModel.fromFirestore(userDoc);
     } catch (e) {
       throw 'Google sign in failed: $e';
+    }
+  }
+
+  // Update user details
+  Future<void> updateUserDetails(String userId, {String? name, String? phone}) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({
+            if (name != null) 'name': name,
+            if (phone != null) 'phone': phone,
+          });
+    } catch (e) {
+      throw 'Failed to update user details: $e';
     }
   }
 
