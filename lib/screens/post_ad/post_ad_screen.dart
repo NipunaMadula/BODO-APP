@@ -161,7 +161,7 @@ class PostAdScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: Implement post advertisement
+                  // TODO: Implement post advertisement section
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlueAccent,
