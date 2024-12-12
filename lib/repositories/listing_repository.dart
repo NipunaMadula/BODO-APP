@@ -13,20 +13,38 @@ class ListingRepository {
  })  : _firestore = firestore ?? FirebaseFirestore.instance,
        _storage = storage ?? FirebaseStorage.instance;
 
- Future<List<String>> uploadImages(List<File> images, String userId) async {
-   List<String> imageUrls = [];
-   
-   for (var image in images) {
-     final ref = _storage.ref().child(
-           'listings/${userId}/${DateTime.now().millisecondsSinceEpoch}_${imageUrls.length}.jpg');
-     
-     await ref.putFile(image);
-     final url = await ref.getDownloadURL();
-     imageUrls.add(url);
-   }
-   
-   return imageUrls;
- }
+  Future<List<String>> uploadImages(List<File> images, String userId) async {
+    try {
+      List<String> imageUrls = [];
+      
+      for (var image in images) {
+        // Create a reference to 'listings/userId/timestamp_index.jpg'
+        final fileName = '${DateTime.now().millisecondsSinceEpoch}_${imageUrls.length}.jpg';
+        final ref = _storage
+            .ref()
+            .child('listings')
+            .child(userId)
+            .child(fileName);
+        
+        // Upload file
+        await ref.putFile(
+          image,
+          SettableMetadata(
+            contentType: 'image/jpeg',
+            customMetadata: {'userId': userId},
+          ),
+        );
+        
+        // Get download URL
+        final url = await ref.getDownloadURL();
+        imageUrls.add(url);
+      }
+      
+      return imageUrls;
+    } catch (e) {
+      throw 'Failed to upload images: $e';
+    }
+  }
 
  Future<ListingModel> createListing(ListingModel listing) async {
    final docRef = await _firestore
