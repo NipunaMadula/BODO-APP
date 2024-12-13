@@ -39,52 +39,124 @@ class _PostAdScreenState extends State<PostAdScreen> {
     }
   }
 
-  void _showErrorSnackBar(String message) {
+Future<void> _submitPost() async {
+  // Validate form
+  if (!_formKey.currentState!.validate()) return;
+  
+  // Validate images
+  if (_selectedImages.isEmpty) {
+    _showErrorSnackBar('Please select at least one image');
+    return;
+  }
+
+  setState(() => _isLoading = true);
+
+  try {
+    // Check authentication
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      throw 'Please sign in to post an advertisement';
+    }
+
+    // Validate selected type
+    if (_selectedPropertyType == null) {
+      throw 'Please select a property type';
+    }
+
+    // Validate price
+    final price = double.tryParse(_priceController.text);
+    if (price == null || price <= 0) {
+      throw 'Please enter a valid price';
+    }
+
+    // Validate phone number format
+    final phone = _phoneController.text.trim();
+    if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+      throw 'Please enter a valid 10-digit phone number';
+    }
+
+    // Create listing
+    await _listingRepository.createListingWithImages(
+      userId: userId,
+      title: _titleController.text.trim(),
+      description: _descriptionController.text.trim(),
+      type: _selectedPropertyType!,
+      price: price,
+      location: _locationController.text.trim(),
+      images: _selectedImages,
+      phone: _phoneController.text.trim(),// Add phone number to listing
+    );
+
+    if (!mounted) return;
+
+    // Show success and navigate back
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
+      const SnackBar(
+        content: Text('Advertisement posted successfully!'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
       ),
     );
-  }
 
-  Future<void> _submitPost() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_selectedImages.isEmpty) {
-      _showErrorSnackBar('Please select at least one image');
-      return;
+      // Clear form after successful posting
+  setState(() {
+    _titleController.clear();
+    _priceController.clear();
+    _locationController.clear();
+    _descriptionController.clear();
+    _phoneController.clear();
+    _selectedPropertyType = null;
+    _selectedImages.clear();
+  });
+
+  } catch (e) {
+    // Handle specific errors
+    String errorMessage = 'Failed to post advertisement. ';
+    
+    if (e.toString().contains('storage/unauthorized')) {
+      errorMessage += 'Permission denied to upload images. Please try again.';
+    } else if (e.toString().contains('network')) {
+      errorMessage += 'Please check your internet connection.';
+    } else {
+      errorMessage += e.toString();
     }
 
-    setState(() => _isLoading = true);
-
-    try {
-      final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null) throw 'User not authenticated';
-
-      await _listingRepository.createListingWithImages(
-        userId: userId,
-        title: _titleController.text,
-        description: _descriptionController.text,
-        type: _selectedPropertyType!,
-        price: double.parse(_priceController.text),
-        location: _locationController.text,
-        images: _selectedImages,
-      );
-
-      if (!mounted) return;
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Advertisement posted successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } catch (e) {
-      _showErrorSnackBar('Failed to post advertisement: $e');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+    _showErrorSnackBar(errorMessage);
+  } finally {
+    // Reset loading state if still mounted
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
+}
+
+// Helper method to show error messages
+void _showErrorSnackBar(String message) {
+  if (!mounted) return;
+  
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Dismiss',
+        textColor: Colors.white,
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    ),
+  );
+}
+
+// Helper method to validate phone number
+bool _isValidPhoneNumber(String phone) {
+  phone = phone.trim();
+  if (phone.isEmpty) return false;
+  if (phone.length != 10) return false;
+  return RegExp(r'^[0-9]+$').hasMatch(phone);
+}
 
   @override
   void dispose() {
