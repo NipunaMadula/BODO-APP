@@ -173,6 +173,7 @@ bool _isValidPhoneNumber(String phone) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Post Advertisement',
           style: TextStyle(
