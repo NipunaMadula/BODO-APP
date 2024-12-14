@@ -1,7 +1,7 @@
+import 'package:bodo_app/screens/saved_items/saved_items_screen.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import '../post_ad/post_ad_screen.dart';  // Update this import
-import '../notification/notification_screen.dart';
+import '../post_ad/post_ad_screen.dart';
 import '../profile/profile_screen.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -16,8 +16,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const PostAdScreen(),  // Changed from ChatScreen
-    const NotificationScreen(),
+    const PostAdScreen(),
+    const SavedItemsScreen(),
     const ProfileScreen(),
   ];
 
@@ -42,11 +42,11 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),  // Changed icon
+            icon: Icon(Icons.add_circle_outline),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_none),
+            icon: Icon(Icons.bookmark_border),
             label: '',
           ),
           BottomNavigationBarItem(
