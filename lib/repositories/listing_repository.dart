@@ -15,18 +15,25 @@ class ListingRepository {
         _storage = storage ?? FirebaseStorage.instance;
 
   Future<List<String>> uploadImages(List<File> images, String userId) async {
-    List<String> imageUrls = [];
-    
-    for (var image in images) {
-      String? url = await _uploadSingleImage(image, userId, imageUrls.length);
-      if (url != null) {
-        imageUrls.add(url);
-      } else {
-        throw 'Failed to upload image after multiple retries';
+    try {
+      print('Starting to upload ${images.length} images');
+      List<String> imageUrls = [];
+      
+      for (var image in images) {
+        String? url = await _uploadSingleImage(image, userId, imageUrls.length);
+        if (url != null) {
+          imageUrls.add(url);
+          print('Successfully uploaded image: $url');
+        } else {
+          throw 'Failed to upload image after multiple retries';
+        }
       }
+      
+      return imageUrls;
+    } catch (e) {
+      print('Error in uploadImages: $e');
+      rethrow;
     }
-    
-    return imageUrls;
   }
 
   Future<String?> _uploadSingleImage(File image, String userId, int index) async {
@@ -54,7 +61,6 @@ class ListingRepository {
           ),
         );
         
-        // Get and return download URL if successful
         return await ref.getDownloadURL();
       } catch (e) {
         attempts++;
@@ -62,7 +68,7 @@ class ListingRepository {
           print('Failed to upload image after $maxRetries attempts: $e');
           return null;
         }
-        // Wait before retrying with exponential backoff
+  
         await Future.delayed(Duration(seconds: attempts * 2));
       }
     }
@@ -70,11 +76,17 @@ class ListingRepository {
   }
 
   Future<ListingModel> createListing(ListingModel listing) async {
-    final docRef = await _firestore
-        .collection('listings')
-        .add(listing.toMap());
-        
-    return listing.copyWith(id: docRef.id);
+    try {
+      print('Creating listing: ${listing.toMap()}'); // Debug log
+      final docRef = await _firestore
+          .collection('listings')
+          .add(listing.toMap());
+      print('Created listing with ID: ${docRef.id}'); // Debug 
+      return listing.copyWith(id: docRef.id);
+    } catch (e) {
+      print('Error creating listing: $e');
+      rethrow;
+    }
   }
 
   Future<ListingModel> createListingWithImages({
@@ -85,14 +97,14 @@ class ListingRepository {
     required double price,
     required String location,
     required List<File> images,
-    required String phone, 
+    required String phone,
   }) async {
     List<String> uploadedUrls = [];
     try {
-      // Try to upload images
+      print('Starting image upload for user: $userId'); // Debug 
       uploadedUrls = await uploadImages(images, userId);
+      print('Uploaded ${uploadedUrls.length} images'); // Debug log
       
-      // Create listing with successful uploads
       final listing = ListingModel(
         id: '',
         userId: userId,
@@ -101,30 +113,52 @@ class ListingRepository {
         type: type,
         price: price,
         location: location,
-        phone: phone, 
+        phone: phone,
         images: uploadedUrls,
         createdAt: DateTime.now(),
       );
 
+      print('Creating listing with uploaded images'); // Debug log
       return await createListing(listing);
     } catch (e) {
-      // If any images were uploaded before failure, clean them up
+      print('Error in createListingWithImages: $e');
       if (uploadedUrls.isNotEmpty) {
+        print('Cleaning up ${uploadedUrls.length} uploaded images'); // Debug log
         await _cleanupFailedUploads(uploadedUrls);
       }
-      throw 'Failed to create listing: $e';
+      rethrow;
     }
   }
 
-  Stream<List<ListingModel>> getListings() {
+Stream<List<ListingModel>> getListings() {
+  try {
     return _firestore
         .collection('listings')
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ListingModel.fromFirestore(doc))
-            .toList());
+        .map((snapshot) {
+          print('Got ${snapshot.docs.length} listings from Firestore');
+          return snapshot.docs.where((doc) {
+            final data = doc.data();
+            final isValid = ListingModel.isValidListing(data);
+            if (!isValid) {
+              print('Invalid listing data for doc ${doc.id}: $data');
+            }
+            return isValid;
+          }).map((doc) {
+            try {
+              return ListingModel.fromFirestore(doc);
+            } catch (e) {
+              print('Error parsing listing ${doc.id}: $e');
+              rethrow;
+            }
+          }).toList();
+        });
+  } catch (e) {
+    print('Error in getListings: $e');
+    rethrow;
   }
+}
 
   Stream<List<ListingModel>> getListingsByUserId(String userId) {
     return _firestore
