@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:bodo_app/models/listing_model.dart';
 import 'package:bodo_app/repositories/listing_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bodo_app/screens/listing_detail_screen.dart';
+import 'package:bodo_app/repositories/saved_listings_repository.dart';
 
 class SavedItemsScreen extends StatelessWidget {
-  const SavedItemsScreen({super.key});
+  SavedItemsScreen({super.key});
+
+  final _listingRepository = ListingRepository();
+  final _savedListingsRepository = SavedListingsRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +29,21 @@ class SavedItemsScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: StreamBuilder<List<ListingModel>>(
-        stream: ListingRepository().getListings(), // Replace with getSavedListings()
+        stream: _listingRepository.getSavedListings(
+          FirebaseAuth.instance.currentUser?.uid ?? ''
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Error: ${snapshot.error}'),
+                ],
+              ),
+            );
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,7 +80,7 @@ class SavedItemsScreen extends StatelessWidget {
             itemCount: listings.length,
             itemBuilder: (context, index) {
               final listing = listings[index];
-              return _buildSavedItemCard(listing);
+              return _buildSavedItemCard(context, listing);
             },
           );
         },
@@ -71,7 +88,7 @@ class SavedItemsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSavedItemCard(ListingModel listing) {
+  Widget _buildSavedItemCard(BuildContext context, ListingModel listing) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -79,11 +96,15 @@ class SavedItemsScreen extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          // Navigate to listing details
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ListingDetailScreen(listing: listing),
+            ),
+          );
         },
         child: Row(
           children: [
-          
             ClipRRect(
               borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
               child: Image.network(
@@ -91,9 +112,14 @@ class SavedItemsScreen extends StatelessWidget {
                 width: 120,
                 height: 120,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 120,
+                  height: 120,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.error),
+                ),
               ),
             ),
-         
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -143,12 +169,38 @@ class SavedItemsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            // Remove button
             IconButton(
               icon: const Icon(Icons.bookmark),
               color: Colors.lightBlueAccent,
-              onPressed: () {
-
+              onPressed: () async {
+                final userId = FirebaseAuth.instance.currentUser?.uid;
+                if (userId == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please sign in to save listings')),
+                  );
+                  return;
+                }
+                
+                try {
+                  await _savedListingsRepository.toggleSavedListing(
+                    userId: userId,
+                    listingId: listing.id,
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Removed from saved'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
+                }
               },
             ),
           ],
