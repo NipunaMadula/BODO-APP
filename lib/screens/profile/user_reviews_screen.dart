@@ -14,7 +14,6 @@ class UserReviewsScreen extends StatefulWidget {
 class _UserReviewsScreenState extends State<UserReviewsScreen> {
   final _reviewRepository = ReviewRepository();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
