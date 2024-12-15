@@ -1,3 +1,4 @@
+import 'package:bodo_app/repositories/saved_listings_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:bodo_app/models/listing_model.dart';
@@ -130,6 +131,28 @@ class ListingRepository {
     }
   }
 
+  Stream<List<ListingModel>> getSavedListings(String userId) {
+  if (userId.isEmpty) return Stream.value([]);
+  
+  final _savedListingsRepository = SavedListingsRepository();
+
+  return _savedListingsRepository
+    .getSavedListingIds(userId)
+    .asyncMap((savedIds) async {
+      if (savedIds.isEmpty) return [];
+      
+      final futures = savedIds.map((id) => 
+        _firestore.collection('listings').doc(id).get()
+      );
+      
+      final docs = await Future.wait(futures);
+      return docs
+          .where((doc) => doc.exists)
+          .map((doc) => ListingModel.fromFirestore(doc))
+          .toList();
+    });
+}
+
 Stream<List<ListingModel>> getListings() {
   try {
     return _firestore
@@ -172,17 +195,15 @@ Stream<List<ListingModel>> getListings() {
   }
 
   Future<void> deleteListing(String listingId) async {
-    // First get the listing to get image URLs
     final docSnapshot = await _firestore.collection('listings').doc(listingId).get();
     if (docSnapshot.exists) {
       final data = docSnapshot.data();
       if (data != null && data['images'] != null) {
-        // Delete all images from storage
         final List<String> imageUrls = List<String>.from(data['images']);
         await _cleanupFailedUploads(imageUrls);
       }
     }
-    // Then delete the listing document
+    // Delete the listing document
     await _firestore.collection('listings').doc(listingId).delete();
   }
 
