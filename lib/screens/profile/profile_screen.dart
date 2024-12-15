@@ -1,11 +1,39 @@
 import 'package:bodo_app/screens/authentication/login/login_screen.dart';
+import 'package:bodo_app/screens/profile/user_reviews_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Future<void> _handleLogout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error signing out: $e')),
+        );
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -20,14 +48,6 @@ class ProfileScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.grey),
-            onPressed: () {
-              // TODO: Navigate to settings
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -37,18 +57,23 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 20),
               
               // Profile Image
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.grey,
-                child: Icon(Icons.person, size: 50, color: Colors.white),
+                backgroundImage: user?.photoURL != null 
+                    ? NetworkImage(user!.photoURL!) 
+                    : null,
+                child: user?.photoURL == null
+                    ? const Icon(Icons.person, size: 50, color: Colors.white)
+                    : null,
               ),
               
               const SizedBox(height: 16),
               
               // Name
-              const Text(
-                'Nipuna Madula',
-                style: TextStyle(
+              Text(
+                user?.displayName ?? 'Guest',
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -57,9 +82,9 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 8),
               
               // Email
-              const Text(
-                'nipunamadula490@example.com',
-                style: TextStyle(
+              Text(
+                user?.email ?? 'Not signed in',
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 14,
                 ),
@@ -78,25 +103,28 @@ class ProfileScreen extends StatelessWidget {
                     _buildListTile(
                       icon: Icons.person_outline,
                       title: 'Personal Information',
-                      onTap: () {},
+                      onTap: () {
+                        // Navigate to personal info
+                      },
                     ),
                     _buildDivider(),
                     _buildListTile(
-                      icon: Icons.bookmark_border,
-                      title: 'Saved Boarding Houses',
-                      onTap: () {},
+                      icon: Icons.villa,  
+                      title: 'My Properties',
+                      onTap: () {
+                        // Your onTap logic
+                      },
                     ),
                     _buildDivider(),
                     _buildListTile(
                       icon: Icons.star_border,
-                      title: 'Reviews',
-                      onTap: () {},
-                    ),
-                    _buildDivider(),
-                    _buildListTile(
-                      icon: Icons.notifications_outlined,
-                      title: 'Notifications',
-                      onTap: () {},
+                      title: 'My Reviews',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const UserReviewsScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -145,13 +173,7 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.logout,
                   title: 'Logout',
                   textColor: Colors.red,
-                  onTap: () {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    );
-                    // TODO: Handle logout
-                  },
+                  onTap: () => _handleLogout(context),
                 ),
               ),
               
