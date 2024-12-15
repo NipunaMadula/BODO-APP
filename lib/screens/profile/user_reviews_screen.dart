@@ -1,4 +1,3 @@
-// lib/screens/profile/user_reviews_screen.dart
 import 'package:bodo_app/repositories/review_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bodo_app/models/review_model.dart';
@@ -96,7 +95,6 @@ class ReviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Add listing title
             Text(
               review.listingTitle,
               style: const TextStyle(
@@ -118,7 +116,6 @@ class ReviewCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Add delete button
                 IconButton(
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () => _showDeleteDialog(context),
@@ -141,7 +138,6 @@ class ReviewCard extends StatelessWidget {
     );
   }
 
-  // Add this method to handle delete confirmation
   Future<void> _showDeleteDialog(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,
