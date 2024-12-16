@@ -1,4 +1,5 @@
 import 'package:bodo_app/screens/authentication/login/login_screen.dart';
+import 'package:bodo_app/screens/profile/my_properties_screen.dart';
 import 'package:bodo_app/screens/profile/user_reviews_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.villa,  
                       title: 'My Properties',
                       onTap: () {
-                        // Your onTap logic
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (_) => MyPropertiesScreen()),
+                       );
                       },
                     ),
                     _buildDivider(),
