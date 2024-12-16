@@ -14,6 +14,14 @@ class ListingModel {
   final List<String> images;
   final DateTime createdAt;
 
+  static String toTitleCase(String text) {
+    if (text.isEmpty) return text;
+    return text.split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
+
   ListingModel({
     required this.id,
     required this.title,
@@ -53,12 +61,12 @@ class ListingModel {
 
       return ListingModel(
         id: doc.id,
-        title: data['title']?.toString() ?? '',
+        title: toTitleCase(data['title']?.toString() ?? ''),
         description: data['description']?.toString() ?? '',
         type: data['type']?.toString() ?? '',
         price: price,
         district: data['district']?.toString() ?? '',
-        location: data['location']?.toString() ?? '',
+        location: toTitleCase(data['location']?.toString() ?? ''),
         phone: data['phone']?.toString() ?? '',
         userId: data['userId']?.toString() ?? '',
         images: images,
@@ -126,12 +134,12 @@ class ListingModel {
   }) {
     return ListingModel(
       id: id ?? this.id,
-      title: title ?? this.title,
+      title: title != null ? toTitleCase(title) : this.title,
       description: description ?? this.description,
       type: type ?? this.type,
       price: price ?? this.price,
       district: district ?? this.district,
-      location: location ?? this.location,
+      location: location != null ? toTitleCase(location) : this.location,
       phone: phone ?? this.phone,
       userId: userId ?? this.userId,
       images: images ?? this.images,
@@ -156,12 +164,12 @@ class ListingModel {
     return ListingModel(
       id: '',
       userId: userId,
-      title: title,
+      title: toTitleCase(title),
       description: description,
       type: type,
       price: price,
       district: district,
-      location: location,
+      location: toTitleCase(location),
       phone: phone,
       images: imageUrls,
       createdAt: DateTime.now(),
