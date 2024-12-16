@@ -24,24 +24,52 @@ class _PostAdScreenState extends State<PostAdScreen> {
   bool _isLoading = false;
   final _listingRepository = ListingRepository();
 
-  Future<void> _pickImages() async {
-    try {
-      final ImagePicker picker = ImagePicker();
-      final List<XFile> images = await picker.pickMultiImage();
-      
-      if (images.isNotEmpty) {
+  static const int maxImageSize = 5 * 1024 * 1024; 
+  static const int maxImages = 10;
+
+Future<void> _pickImages() async {
+  try {
+    if (_selectedImages.length >= maxImages) {
+      _showErrorSnackBar('Maximum $maxImages images allowed');
+      return;
+    }
+
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> images = await picker.pickMultiImage(
+      // Add these parameters to optimize image selection
+      imageQuality: 70,
+      maxWidth: 1200,
+      maxHeight: 1200,
+    );
+    
+    if (images.isNotEmpty) {
+
+      if (_selectedImages.length + images.length > maxImages) {
+        final remainingSlots = maxImages - _selectedImages.length;
+        _showErrorSnackBar('Only $remainingSlots more images allowed');
+
+        final selectedImages = images.take(remainingSlots);
         setState(() {
-          _selectedImages = images.map((image) => File(image.path)).toList();
+          _selectedImages.addAll(selectedImages.map((image) => File(image.path)));
+        });
+      } else {
+        setState(() {
+          _selectedImages.addAll(images.map((image) => File(image.path)));
         });
       }
-    } catch (e) {
-      _showErrorSnackBar('Failed to pick images: $e');
     }
+  } catch (e) {
+    _showErrorSnackBar('Failed to pick images: $e');
   }
-
+}
 Future<void> _submitPost() async {
   // Validate form
   if (!_formKey.currentState!.validate()) return;
+
+  if (_selectedImages.any((image) => image.lengthSync() > maxImageSize)) {
+  _showErrorSnackBar('One or more images exceed 5MB. Please choose smaller images.');
+  return;
+}
   
   // Validate images
   if (_selectedImages.isEmpty) {
@@ -212,7 +240,7 @@ bool _isValidPhoneNumber(String phone) {
                                    color: Colors.grey),
                               SizedBox(height: 8),
                               Text(
-                                'Add Photos',
+                                'Add Photos (0/$maxImages)', 
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 16,
