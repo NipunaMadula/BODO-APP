@@ -489,6 +489,8 @@ void _showContactOptions(BuildContext context) {
                         const Divider(),
                         _buildDetailRow('Type', widget.listing.type),
                         const SizedBox(height: 12),
+                        _buildDetailRow('District', widget.listing.district),
+                        const SizedBox(height: 12),
                         _buildDetailRow('Location', widget.listing.location),
                         // Add more details as needed
                       ],
