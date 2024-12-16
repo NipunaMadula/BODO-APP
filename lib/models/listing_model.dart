@@ -7,6 +7,7 @@ class ListingModel {
   final String description;
   final String type;
   final double price;
+  final String district;
   final String location;
   final String phone;
   final String userId;
@@ -19,6 +20,7 @@ class ListingModel {
     required this.description,
     required this.type,
     required this.price,
+    required this.district,
     required this.location,
     required this.phone,
     required this.userId,
@@ -26,82 +28,82 @@ class ListingModel {
     required this.createdAt,
   });
 
-factory ListingModel.fromFirestore(DocumentSnapshot doc) {
-  final data = doc.data() as Map<String, dynamic>;
-  try {
-
-    final dynamic rawPrice = data['price'];
-    final double price = switch (rawPrice) {
-      null => 0.0,
-      num n => n.toDouble(),
-      String s => double.tryParse(s) ?? 0.0,
-      _ => 0.0,
-    };
-
-    final List<String> images = switch (data['images']) {
-      null => [],
-      List l => List<String>.from(l),
-      _ => [],
-    };
-
-    final DateTime createdAt = switch (data['createdAt']) {
-      Timestamp t => t.toDate(),
-      DateTime d => d,
-      _ => DateTime.now(),
-    };
-
-    return ListingModel(
-      id: doc.id,
-      title: data['title']?.toString() ?? '',
-      description: data['description']?.toString() ?? '',
-      type: data['type']?.toString() ?? '',
-      price: price,
-      location: data['location']?.toString() ?? '',
-      phone: data['phone']?.toString() ?? '',
-      userId: data['userId']?.toString() ?? '',
-      images: images,
-      createdAt: createdAt,
-    );
-  } catch (e) {
-    print('Error parsing document ${doc.id}: $e');
-    print('Raw document data: $data');
-    rethrow;
-  }
-}
-
-static bool isValidListing(Map<String, dynamic> data) {
-  try {
-
-    if (data['title']?.toString().isEmpty ?? true) return false;
-    if (data['location']?.toString().isEmpty ?? true) return false;
-    if (data['type']?.toString().isEmpty ?? true) return false;
-    
-
-    final dynamic price = data['price'];
-    if (price != null) {
-      final double? numPrice = switch (price) {
+  factory ListingModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    try {
+      final dynamic rawPrice = data['price'];
+      final double price = switch (rawPrice) {
+        null => 0.0,
         num n => n.toDouble(),
-        String s => double.tryParse(s),
-        _ => null,
+        String s => double.tryParse(s) ?? 0.0,
+        _ => 0.0,
       };
-      if (numPrice == null || numPrice < 0) return false;
+
+      final List<String> images = switch (data['images']) {
+        null => [],
+        List l => List<String>.from(l),
+        _ => [],
+      };
+
+      final DateTime createdAt = switch (data['createdAt']) {
+        Timestamp t => t.toDate(),
+        DateTime d => d,
+        _ => DateTime.now(),
+      };
+
+      return ListingModel(
+        id: doc.id,
+        title: data['title']?.toString() ?? '',
+        description: data['description']?.toString() ?? '',
+        type: data['type']?.toString() ?? '',
+        price: price,
+        district: data['district']?.toString() ?? '',
+        location: data['location']?.toString() ?? '',
+        phone: data['phone']?.toString() ?? '',
+        userId: data['userId']?.toString() ?? '',
+        images: images,
+        createdAt: createdAt,
+      );
+    } catch (e) {
+      print('Error parsing document ${doc.id}: $e');
+      print('Raw document data: $data');
+      rethrow;
     }
-
-
-    final String phone = data['phone']?.toString() ?? '';
-    if (!RegExp(r'^\d{10}$').hasMatch(phone)) return false;
-
-    return true;
-  } catch (e) {
-    print('Validation error: $e');
-    return false;
   }
-}
+
+  static bool isValidListing(Map<String, dynamic> data) {
+    try {
+      if (data['title']?.toString().isEmpty ?? true) return false;
+      if (data['location']?.toString().isEmpty ?? true) return false;
+      if (data['type']?.toString().isEmpty ?? true) return false;
+      if (data['district']?.toString().isEmpty ?? true) return false;
+
+      final dynamic price = data['price'];
+      if (price != null) {
+        final double? numPrice = switch (price) {
+          num n => n.toDouble(),
+          String s => double.tryParse(s),
+          _ => null,
+        };
+        if (numPrice == null || numPrice < 0) return false;
+      }
+
+      final String phone = data['phone']?.toString() ?? '';
+      if (!RegExp(r'^\d{10}$').hasMatch(phone)) return false;
+
+      return true;
+    } catch (e) {
+      print('Validation error: $e');
+      return false;
+    }
+  }
+
   Map<String, dynamic> toMap() => {
     'title': title,
     'description': description,
     'type': type,
     'price': price,
+    'district': district,
     'location': location,
     'phone': phone,
     'userId': userId,
@@ -115,6 +117,7 @@ static bool isValidListing(Map<String, dynamic> data) {
     String? description,
     String? type,
     double? price,
+    String? district,
     String? location,
     String? phone,
     String? userId,
@@ -127,6 +130,7 @@ static bool isValidListing(Map<String, dynamic> data) {
       description: description ?? this.description,
       type: type ?? this.type,
       price: price ?? this.price,
+      district: district ?? this.district,
       location: location ?? this.location,
       phone: phone ?? this.phone,
       userId: userId ?? this.userId,
@@ -141,6 +145,7 @@ static bool isValidListing(Map<String, dynamic> data) {
     required String description,
     required String type,
     required double price,
+    required String district,
     required String location,
     required String phone,
     required List<File> images,
@@ -155,6 +160,7 @@ static bool isValidListing(Map<String, dynamic> data) {
       description: description,
       type: type,
       price: price,
+      district: district,
       location: location,
       phone: phone,
       images: imageUrls,
@@ -167,6 +173,7 @@ static bool isValidListing(Map<String, dynamic> data) {
     required String description,
     required String type,
     required String price,
+    required String district,
     required String location,
     required String phone,
     required List<File>? images,
@@ -175,6 +182,7 @@ static bool isValidListing(Map<String, dynamic> data) {
     if (description.trim().isEmpty) return 'Description is required';
     if (type.isEmpty) return 'Property type is required';
     if (price.isEmpty) return 'Price is required';
+    if (district.trim().isEmpty) return 'District is required';
     if (location.trim().isEmpty) return 'Location is required';
     if (phone.trim().isEmpty) return 'Phone number is required';
     if (!RegExp(r'^\d{10}$').hasMatch(phone.trim())) {
@@ -199,11 +207,12 @@ static bool isValidListing(Map<String, dynamic> data) {
     description: description,
     type: type,
     price: price.toString(),
+    district: district,
     location: location,
     phone: phone,
     images: null,
   ) == null;
 
   @override
-  String toString() => 'ListingModel(id: $id, title: $title, type: $type, price: $price, location: $location)';
+  String toString() => 'ListingModel(id: $id, title: $title, type: $type, price: $price, district: $district, location: $location)';
 }
