@@ -1,3 +1,4 @@
+import 'package:bodo_app/screens/home/listing_detail_screen.dart';
 import 'package:bodo_app/screens/profile/edit_listing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -94,37 +95,138 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
 
   Widget _buildPropertyCard(BuildContext context, ListingModel listing) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            listing.images.first,
-            width: 60,
-            height: 60,
-            fit: BoxFit.cover,
+      margin: const EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ListingDetailScreen(listing: listing),
           ),
         ),
-        title: Text(listing.title),
-        subtitle: Text('Rs.${listing.price}/month'),
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              child: const Text('Edit'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => EditListingScreen(listing: listing),
+        child: Container(
+          height: 120,
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Image with error handling
+              AspectRatio(
+                aspectRatio: 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    listing.images.first,
+                    width: 96,
+                    height: 96,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey[200],
+                      child: const Icon(Icons.error_outline),
+                    ),
                   ),
-                );
-              },
-            ),
-            PopupMenuItem(
-              child: const Text('Delete'),
-              onTap: () => _showDeleteDialog(context, listing),
-            ),
-          ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              
+              // Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      listing.title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Rs.${listing.price}/month',
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            '${listing.district}, ${listing.location}',
+                            style: TextStyle(color: Colors.grey[600]),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        listing.type,
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Menu
+              PopupMenuButton(
+                icon: const Icon(Icons.more_vert),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: const Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 8),
+                        Text('Edit'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: const Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('Delete', style: TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: (value) {
+                  switch (value) {
+                    case 'edit':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditListingScreen(listing: listing),
+                        ),
+                      );
+                      break;
+                    case 'delete':
+                      _showDeleteDialog(context, listing);
+                      break;
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
