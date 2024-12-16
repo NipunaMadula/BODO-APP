@@ -64,38 +64,55 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     });
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.lightBlueAccent,
-        unselectedItemColor: Colors.grey,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: _onTabTapped,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            selectedItemColor: Colors.lightBlueAccent,
+            unselectedItemColor: Colors.grey.shade400,
+            selectedFontSize: 12,
+            unselectedFontSize: 12,
+            elevation: 0,
+            items: [
+              _buildNavItem(Icons.home_outlined, Icons.home, 'Home'),
+              _buildNavItem(Icons.add_circle_outline, Icons.add_circle, 'Post Ad'),
+              _buildNavItem(Icons.bookmark_border, Icons.bookmark, 'Saved'),
+              _buildNavItem(Icons.person_outline, Icons.person, 'Profile'),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
-            label: 'Post Ad',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-        ],
+        ),
       ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(IconData icon, IconData activeIcon, String label) {
+    return BottomNavigationBarItem(
+      icon: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Icon(icon),
+      ),
+      activeIcon: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Icon(activeIcon),
+      ),
+      label: label,
     );
   }
 }
