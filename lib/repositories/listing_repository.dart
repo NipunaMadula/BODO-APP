@@ -186,14 +186,23 @@ Stream<List<ListingModel>> getListings() {
 }
 
   Stream<List<ListingModel>> getListingsByUserId(String userId) {
-    return _firestore
-        .collection('listings')
-        .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ListingModel.fromFirestore(doc))
-            .toList());
+    if (userId.isEmpty) return Stream.value([]);
+    
+    try {
+      return _firestore
+          .collection('listings')
+          .where('userId', isEqualTo: userId)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs
+                .map((doc) => ListingModel.fromFirestore(doc))
+                .toList();
+          });
+    } catch (e) {
+      print('Error getting user listings: $e');
+      return Stream.value([]);
+    }
   }
 
   Future<void> deleteListing(String listingId) async {
