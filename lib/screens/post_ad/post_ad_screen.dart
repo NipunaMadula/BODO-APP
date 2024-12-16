@@ -209,12 +209,13 @@ bool _isValidPhoneNumber(String phone) {
           'Post Advertisement',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
+            fontSize: 26,  
+            fontWeight: FontWeight.w600,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
       ),
       body: Form(
         key: _formKey,
@@ -229,24 +230,27 @@ bool _isValidPhoneNumber(String phone) {
                 child: Container(
                   height: 150,
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: Colors.grey.shade200),
                   ),
                   child: _selectedImages.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.add_photo_alternate_outlined, 
-                                   size: 40, 
-                                   color: Colors.grey),
-                              SizedBox(height: 8),
+                            children: [
+                              Icon(
+                                Icons.add_photo_alternate_outlined, 
+                                size: 40, 
+                                color: Colors.blue.shade300,
+                              ),
+                              const SizedBox(height: 8),
                               Text(
                                 'Add Photos (0/$maxImages)', 
                                 style: TextStyle(
-                                  color: Colors.grey,
+                                  color: Colors.blue.shade300,
                                   fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
@@ -289,11 +293,12 @@ bool _isValidPhoneNumber(String phone) {
               const SizedBox(height: 24),
 
               // Property Details Form
-              const Text(
+              Text(
                 'Property Details',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade800,
                 ),
               ),
               const SizedBox(height: 16),
@@ -311,8 +316,18 @@ bool _isValidPhoneNumber(String phone) {
                 decoration: InputDecoration(
                   labelText: 'Title',
                   hintText: 'Enter property title',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
                   ),
                 ),
               ),
@@ -335,24 +350,44 @@ bool _isValidPhoneNumber(String phone) {
                 decoration: InputDecoration(
                   labelText: 'Monthly Rent (Rs.)',
                   hintText: 'Enter monthly rent',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // District
+              // District    
               DropdownButtonFormField<String>(
                 value: _selectedDistrict,
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: 'District',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
                   ),
-                  enabled: !_isLoading,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
+                  ),
                 ),
+                icon: Icon(Icons.arrow_drop_down, color: Colors.grey.shade400),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please select a district';
@@ -415,8 +450,18 @@ bool _isValidPhoneNumber(String phone) {
                 decoration: InputDecoration(
                   labelText: 'Location',
                   hintText: 'Enter property location',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
                   ),
                 ),
               ),
@@ -428,11 +473,21 @@ bool _isValidPhoneNumber(String phone) {
                 isExpanded: true,
                 decoration: InputDecoration(
                   labelText: 'Property Type',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
                   ),
-                  enabled: !_isLoading,  
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
+                  ),
                 ),
+                icon: Icon(Icons.arrow_drop_down, color: Colors.grey.shade400),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please select a property type';
@@ -470,8 +525,18 @@ bool _isValidPhoneNumber(String phone) {
                 decoration: InputDecoration(
                   labelText: 'Description',
                   hintText: 'Enter property description',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
                   ),
                 ),
               ),
@@ -500,9 +565,19 @@ bool _isValidPhoneNumber(String phone) {
                 },
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
-                  hintText: 'Enter your contact number',
+                  hintText: 'Enter your phone number',
+                  labelStyle: TextStyle(color: Colors.grey.shade600),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.blue.shade300),
                   ),
                 ),
               ),
@@ -515,18 +590,27 @@ bool _isValidPhoneNumber(String phone) {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submitPost,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
+                    backgroundColor: Colors.blue.shade400,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
+                      ? SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : const Text(
                           'Post Advertisement',
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                 ),
