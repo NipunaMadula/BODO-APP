@@ -18,7 +18,8 @@ class _PostAdScreenState extends State<PostAdScreen> {
   final _locationController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _phoneController = TextEditingController();
-  
+
+  String? _selectedDistrict;
   String? _selectedPropertyType;
   List<File> _selectedImages = [];
   bool _isLoading = false;
@@ -109,6 +110,7 @@ Future<void> _submitPost() async {
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       type: _selectedPropertyType!,
+      district: _selectedDistrict!,
       price: price,
       location: _locationController.text.trim(),
       images: _selectedImages,
@@ -134,6 +136,7 @@ Future<void> _submitPost() async {
     _descriptionController.clear();
     _phoneController.clear();
     _selectedPropertyType = null;
+    _selectedDistrict = null; 
     _selectedImages.clear();
   });
 
@@ -337,6 +340,66 @@ bool _isValidPhoneNumber(String phone) {
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // District
+              DropdownButtonFormField<String>(
+                value: _selectedDistrict,
+                isExpanded: true,
+                decoration: InputDecoration(
+                  labelText: 'District',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabled: !_isLoading,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a district';
+                  }
+                  return null;
+                },
+                items: [
+                  'Colombo',
+                  'Gampaha',
+                  'Kalutara',
+                  'Kandy',
+                  'Matale',
+                  'Nuwara Eliya',
+                  'Galle',
+                  'Matara',
+                  'Hambantota',
+                  'Jaffna',
+                  'Kilinochchi',
+                  'Mannar',
+                  'Mullaitivu',
+                  'Vavuniya',
+                  'Trincomalee',
+                  'Batticaloa',
+                  'Ampara',
+                  'Kurunegala',
+                  'Puttalam',
+                  'Anuradhapura',
+                  'Polonnaruwa',
+                  'Badulla',
+                  'Monaragala',
+                  'Ratnapura',
+                  'Kegalle',
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: _isLoading 
+                    ? null 
+                    : (String? newValue) {
+                        setState(() {
+                          _selectedDistrict = newValue;
+                        });
+                      },
+              ),
+
               const SizedBox(height: 16),
 
               // Location
