@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
 import '../post_ad/post_ad_screen.dart';
 import '../profile/profile_screen.dart';
+import 'package:flutter/services.dart';
 
 class HomeTabScreen extends StatefulWidget {
   const HomeTabScreen({super.key});
@@ -64,9 +65,20 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     });
   }
 
- @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+@override
+Widget build(BuildContext context) {
+  return WillPopScope(
+    onWillPop: () async {
+      if (_currentIndex == 0) {
+        SystemNavigator.pop();  // This will minimize the app
+      } else {
+        setState(() {
+          _currentIndex = 0;
+        });
+      }
+      return false;  
+    },
+    child: Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -99,8 +111,9 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   BottomNavigationBarItem _buildNavItem(IconData icon, IconData activeIcon, String label) {
     return BottomNavigationBarItem(

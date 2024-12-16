@@ -73,7 +73,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _handleLogout(BuildContext context) async {
+Future<void> _handleLogout(BuildContext context) async {
+  // Show confirmation dialog
+  final shouldLogout = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Logout'),
+      content: const Text('Are you sure you want to logout?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Logout'),
+        ),
+      ],
+    ),
+  );
+
+  if (shouldLogout == true) {
     try {
       await FirebaseAuth.instance.signOut();
       if (context.mounted) {
@@ -91,6 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
