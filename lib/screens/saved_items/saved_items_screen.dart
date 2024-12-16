@@ -21,7 +21,7 @@ class SavedItemsScreen extends StatelessWidget {
           'Saved Items',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 24,
+            fontSize: 25,
             fontWeight: FontWeight.w900,
           ),
         ),

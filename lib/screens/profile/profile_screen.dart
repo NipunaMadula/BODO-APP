@@ -102,13 +102,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Profile',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 26,
-            fontWeight: FontWeight.w600,
+            fontSize: 25,
+            fontWeight: FontWeight.w900,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
-        centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
