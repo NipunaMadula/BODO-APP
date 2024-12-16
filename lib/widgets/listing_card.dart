@@ -1,5 +1,5 @@
 import 'package:bodo_app/models/listing_model.dart';
-import 'package:bodo_app/screens/listing_detail_screen.dart';
+import 'package:bodo_app/screens/home/listing_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class ListingCard extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bodo_app/models/listing_model.dart';
 import 'package:bodo_app/repositories/listing_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bodo_app/screens/listing_detail_screen.dart';
+import 'package:bodo_app/screens/home/listing_detail_screen.dart';
 import 'package:bodo_app/repositories/saved_listings_repository.dart';
 
 class SavedItemsScreen extends StatelessWidget {

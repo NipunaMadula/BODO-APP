@@ -1,6 +1,6 @@
 import 'package:bodo_app/models/listing_model.dart';
 import 'package:bodo_app/repositories/listing_repository.dart';
-import 'package:bodo_app/screens/listing_detail_screen.dart';
+import 'package:bodo_app/screens/home/listing_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 8),
                       
                   
