@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'login_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -24,6 +26,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Future<void> _saveUserDetails() async {
     if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      
       try {
         // Get current user ID
         final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -34,8 +38,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
             .collection('users')
             .doc(userId)
             .update({
-              'name': _nameController.text,
-              'phone': _phoneController.text.isEmpty ? null : _phoneController.text,
+              'name': _nameController.text.trim(),
+              'phone': _phoneController.text.trim(),
             });
 
         // Navigate to login screen
@@ -46,12 +50,17 @@ class _VerifyScreenState extends State<VerifyScreen> {
           (route) => false,
         );
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
       }
     }
   }
@@ -129,8 +138,21 @@ class _VerifyScreenState extends State<VerifyScreen> {
               TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your mobile number';
+                  }
+                  if (value.length != 10) {
+                    return 'Please enter a valid 10-digit mobile number';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
-                  hintText: 'Mobile Number (Optional)',
+                  hintText: 'Mobile Number',
                   filled: true,
                   fillColor: Colors.grey[100],
                   border: OutlineInputBorder(
@@ -138,6 +160,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.all(20),
+                  errorStyle: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
                 ),
               ),
               
@@ -147,7 +173,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 width: double.infinity,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: _saveUserDetails,
+                  onPressed: _isLoading ? null : _saveUserDetails,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightBlueAccent,
                     shape: RoundedRectangleBorder(
@@ -155,14 +181,23 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                          ),
+                        )
+                      : const Text(
+                          'Continue',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                 ),
               ),
             ],
