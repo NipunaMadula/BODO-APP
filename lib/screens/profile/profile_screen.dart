@@ -1,5 +1,6 @@
 import 'package:bodo_app/screens/authentication/login/login_screen.dart';
 import 'package:bodo_app/screens/profile/my_properties_screen.dart';
+import 'package:bodo_app/screens/profile/personal_information_screen.dart';
 import 'package:bodo_app/screens/profile/user_reviews_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +106,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icons.person_outline,
                       title: 'Personal Information',
                       onTap: () {
-                        // Navigate to personal info
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const PersonalInformationScreen()),
+                       );
+
                       },
                     ),
                     _buildDivider(),
