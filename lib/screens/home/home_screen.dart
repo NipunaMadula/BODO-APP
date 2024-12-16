@@ -13,8 +13,37 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _listingRepository = ListingRepository();
   String _searchQuery = '';
-  String _selectedLocation = 'All';
+  String _selectedDistrict = 'All'; 
   String _sortBy = 'None';
+
+    final List<String> _districts = [
+    'All',
+    'Colombo',
+    'Gampaha',
+    'Kalutara',
+    'Kandy',
+    'Matale',
+    'Nuwara Eliya',
+    'Galle',
+    'Matara',
+    'Hambantota',
+    'Jaffna',
+    'Kilinochchi',
+    'Mannar',
+    'Mullaitivu',
+    'Vavuniya',
+    'Trincomalee',
+    'Batticaloa',
+    'Ampara',
+    'Kurunegala',
+    'Puttalam',
+    'Anuradhapura',
+    'Polonnaruwa',
+    'Badulla',
+    'Monaragala',
+    'Ratnapura',
+    'Kegalle',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   
                   const SizedBox(height: 8),
                   
-          
                   Row(
                     children: [
-              
+                      // District Dropdown
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -74,24 +102,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              value: _selectedLocation,
+                              value: _selectedDistrict,
                               isExpanded: true,
-                              hint: const Text('Location'),
-                              items: [
-                                'All',
-                                'Colombo',
-                                'Matara',
-                                'Galle',
-                                'Tangalle',
-                                'Jaffna',
-                                'Kandy'
-                              ].map((location) {
+                              hint: const Text('District'),
+                              items: _districts.map((district) {
                                 return DropdownMenuItem(
-                                  value: location,
-                                  child: Text(location),
+                                  value: district,
+                                  child: Text(district),
                                 );
                               }).toList(),
-                              onChanged: (value) => setState(() => _selectedLocation = value!),
+                              onChanged: (value) => setState(() => _selectedDistrict = value!),
                             ),
                           ),
                         ),
@@ -151,15 +171,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   var listings = snapshot.data ?? [];
                   print('Received ${listings.length} listings'); // Debug print
 
-
                   listings = listings.where((listing) {
                     final matchesSearch = listing.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                                      listing.location.toLowerCase().contains(_searchQuery.toLowerCase());
-                    final matchesLocation = _selectedLocation == 'All' || listing.location == _selectedLocation;
-                    return matchesSearch && matchesLocation;
+                                        listing.location.toLowerCase().contains(_searchQuery.toLowerCase());
+                    final matchesDistrict = _selectedDistrict == 'All' || listing.district == _selectedDistrict;
+                    return matchesSearch && matchesDistrict;
                   }).toList();
-
-                 
+ 
                   if (_sortBy == 'Price Low to High') {
                     listings.sort((a, b) => a.price.compareTo(b.price));
                   } else if (_sortBy == 'Price High to Low') {
