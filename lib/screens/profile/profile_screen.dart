@@ -1,6 +1,9 @@
 import 'package:bodo_app/screens/authentication/login/login_screen.dart';
+import 'package:bodo_app/screens/profile/about_us_screen.dart';
+import 'package:bodo_app/screens/profile/help_center_screen.dart';
 import 'package:bodo_app/screens/profile/my_properties_screen.dart';
 import 'package:bodo_app/screens/profile/personal_information_screen.dart';
+import 'package:bodo_app/screens/profile/privacy_policy_screen.dart';
 import 'package:bodo_app/screens/profile/user_reviews_screen.dart';
 import 'package:bodo_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -94,32 +97,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text(
           'Profile',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
                     
                     // Profile Image
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.grey,
-                      child: Icon(Icons.person, size: 50, color: Colors.white),
+                    Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.blue.shade200,
+                          width: 2,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 45,
+                        backgroundColor: Colors.blue.shade50,
+                        child: Icon(
+                          Icons.person_outline,
+                          size: 45,
+                          color: Colors.blue.shade300,
+                        ),
+                      ),
                     ),
                     
                     const SizedBox(height: 16),
@@ -129,77 +146,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _userModel?.name ?? 'Please verify your account',
                       style: const TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
                     ),
                     
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
                     
                     // Profile Actions
                     Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade200),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
                       ),
                       child: Column(
                         children: [
                           _buildListTile(
                             icon: Icons.person_outline,
                             title: 'Personal Information',
-                            onTap: _navigateToPersonalInfo,  // Updated to use new method
+                            onTap: _navigateToPersonalInfo,
                           ),
                           _buildDivider(),
                           _buildListTile(
                             icon: Icons.villa,
                             title: 'My Properties',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => MyPropertiesScreen()),
-                              );
-                            },
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => MyPropertiesScreen()),
+                            ),
                           ),
                           _buildDivider(),
                           _buildListTile(
-                            icon: Icons.star_border,
+                            icon: Icons.star_outline,
                             title: 'My Reviews',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => const UserReviewsScreen()),
-                              );
-                            },
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const UserReviewsScreen()),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     
                     // Support Section
                     Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade200),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
                       ),
                       child: Column(
                         children: [
                           _buildListTile(
                             icon: Icons.help_outline,
                             title: 'Help Center',
-                            onTap: () {},
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const HelpCenterScreen()),
+                            ),
                           ),
                           _buildDivider(),
                           _buildListTile(
                             icon: Icons.privacy_tip_outlined,
                             title: 'Privacy Policy',
-                            onTap: () {},
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen()),
+                            ),
                           ),
                           _buildDivider(),
                           _buildListTile(
                             icon: Icons.info_outline,
                             title: 'About Us',
-                            onTap: () {},
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const AboutUsScreen()),
+                            ),
                           ),
                         ],
                       ),
@@ -207,23 +232,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     
                     const SizedBox(height: 24),
                     
-                    // Logout Button
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade200),
-                        borderRadius: BorderRadius.circular(12),
+                    TextButton(
+                      onPressed: () => _handleLogout(context),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Colors.red.shade200),
+                        ),
                       ),
-                      child: _buildListTile(
-                        icon: Icons.logout,
-                        title: 'Logout',
-                        textColor: Colors.red,
-                        onTap: () => _handleLogout(context),
+                      child: const Text(
+                        'Logout',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                     
                     const SizedBox(height: 24),
                     
-                    // Version Info
                     Text(
                       'Version 1.0.0',
                       style: TextStyle(
@@ -231,8 +257,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontSize: 12,
                       ),
                     ),
-                    
-                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -244,15 +268,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
-    Color? textColor,
   }) {
     return ListTile(
-      leading: Icon(icon, color: textColor ?? Colors.grey.shade700),
+      leading: Icon(icon, color: Colors.blue.shade400, size: 22),
       title: Text(
         title,
-        style: TextStyle(
-          color: textColor ?? Colors.black87,
+        style: const TextStyle(
           fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: Colors.black87,
         ),
       ),
       trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400),
@@ -264,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Divider(
       height: 1,
       thickness: 1,
-      color: Colors.grey.shade200,
+      color: Colors.grey.shade100,
     );
   }
 }
