@@ -24,6 +24,14 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     const ProfileScreen(),
   ];
 
+  Future<void> moveTaskToBack(bool nonRoot) async {
+  const platform = MethodChannel('app_channel');
+  try {
+    await platform.invokeMethod('moveTaskToBack', {'nonRoot': nonRoot});
+  } on PlatformException catch (_) {
+  }
+}
+
   void _onTabTapped(int index) async {
     if ([1, 2].contains(index)) { 
       final user = FirebaseAuth.instance.currentUser;
@@ -70,13 +78,14 @@ Widget build(BuildContext context) {
   return WillPopScope(
     onWillPop: () async {
       if (_currentIndex == 0) {
-        SystemNavigator.pop();  // This will minimize the app
+        await moveTaskToBack(true);
+        return false;
       } else {
         setState(() {
           _currentIndex = 0;
         });
+        return false;
       }
-      return false;  
     },
     child: Scaffold(
       body: _screens[_currentIndex],
