@@ -1,16 +1,47 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io' as io;
 import 'screens/splash/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bodo_app/blocs/auth/auth_bloc.dart';
+import 'package:bodo_app/blocs/auth/auth_state.dart';
+import 'package:bodo_app/repositories/auth_repository.dart';
+import 'package:bodo_app/screens/home/home_tab_screen.dart';
+
+const platform = const MethodChannel('app_channel');
+
+Future<void> moveTaskToBack(bool nonRoot) async {
+  if (io.Platform.isAndroid) {
+    try {
+      await platform.invokeMethod('moveTaskToBack', {'nonRoot': nonRoot});
+    } on PlatformException catch (_) {
+
+    }
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseStorage.instance; 
-  runApp(const MyApp());
+  await FirebaseStorage.instance;
+
+  final authRepository = AuthRepository();
+  
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthBloc(authRepository),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +56,22 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      home: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is AuthSuccess) {
+            return const HomeTabScreen();
+          } else if (state is AuthError) {
+            return Scaffold(
+              body: Center(
+                child: Text(state.error),
+              ),
+            );
+          }
+          return const SplashScreen();
+        },
+      ),
     );
   }
 }
