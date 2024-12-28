@@ -76,6 +76,17 @@ class AuthRepository {
     }
   }
 
+    Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw 'No user found for that email';
+      }
+      throw e.message ?? 'Failed to send reset email';
+    }
+  }
+
   Future<UserModel> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
