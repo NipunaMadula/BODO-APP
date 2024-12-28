@@ -1,9 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:bodo_app/repositories/auth_repository.dart';
 import 'login_screen.dart';
-import 'create_new_password_screen.dart';
 
-class ThankYouScreen extends StatelessWidget {
-  const ThankYouScreen({super.key});
+class ThankYouScreen extends StatefulWidget {
+  final String email;
+  
+  const ThankYouScreen({
+    required this.email,
+    super.key,
+  });
+
+  @override
+  State<ThankYouScreen> createState() => _ThankYouScreenState();
+}
+
+class _ThankYouScreenState extends State<ThankYouScreen> {
+  bool _isResending = false;
+  final _authRepository = AuthRepository();
+
+  Future<void> _resendLink() async {
+    setState(() => _isResending = true);
+
+    try {
+      await _authRepository.sendPasswordResetEmail(widget.email);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Reset link sent successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to send reset link: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isResending = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +67,6 @@ class ThankYouScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          
             const Center(
               child: Text(
                 'BODO APP',
@@ -50,68 +91,59 @@ class ThankYouScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Message text with clickable email
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CreateNewPasswordScreen()),
-                );
-              },
-              child: RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.5,
-                    color: Colors.grey,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: 'We have sent reset link to ',
-                    ),
-                    TextSpan(
-                      text: 'yourmail@gmail.com\n',
-                      style: TextStyle(
-                        color: Colors.lightBlueAccent,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'please check and use password reset link.',
-                    ),
-                  ],
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: Colors.grey,
                 ),
+                children: [
+                  const TextSpan(
+                    text: 'We have sent reset link to ',
+                  ),
+                  TextSpan(
+                    text: widget.email,
+                    style: const TextStyle(
+                      color: Colors.lightBlueAccent,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: '\nplease check and use password reset link.',
+                  ),
+                ],
               ),
             ),
 
             const SizedBox(height: 50),
-
 
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Didn\'t received link? ',
+                    'Didn\'t receive link? ',
                     style: TextStyle(
                       color: Colors.grey,
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Reset link sent again'),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Resend',
-                      style: TextStyle(
-                        color: Colors.lightBlueAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    onTap: _isResending ? null : _resendLink,
+                    child: _isResending
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Resend',
+                            style: TextStyle(
+                              color: Colors.lightBlueAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ],
               ),
