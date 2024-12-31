@@ -440,11 +440,15 @@ void _showContactOptions(BuildContext context) {
                     children: [
                       const Icon(Icons.location_on, color: Colors.grey, size: 16),
                       const SizedBox(width: 4),
-                      Text(
-                        widget.listing.location,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
+                      Expanded(
+                        child: Text(
+                          widget.listing.location,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                       ),
                     ],
@@ -626,11 +630,16 @@ void _showContactOptions(BuildContext context) {
             fontSize: 16,
           ),
         ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+            textAlign: TextAlign.end,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
           ),
         ),
       ],
