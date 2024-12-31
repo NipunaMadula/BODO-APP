@@ -96,10 +96,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 ),
               ),
               
-              const SizedBox(height: 40),
+              const SizedBox(height: 50),
               
               const Text(
-                'Enter details to verify\nyour account',
+                'Enter details to set up\nyour account',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -107,7 +107,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 ),
               ),
               
-              const SizedBox(height: 40),
+              const SizedBox(height: 45),
               
               TextFormField(
                 controller: _nameController,
