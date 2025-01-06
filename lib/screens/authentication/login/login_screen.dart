@@ -42,9 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
 
-    return BlocProvider(
-      create: (context) => AuthBloc(AuthRepository()),
-      child: BlocListener<AuthBloc, AuthState>(
+    return BlocListener<AuthBloc, AuthState>( 
         listener: (context, state) {
           if (state is AuthSuccess) {
             Navigator.pushReplacement(
@@ -333,7 +331,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 }
