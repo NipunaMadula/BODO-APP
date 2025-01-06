@@ -11,15 +11,13 @@ import 'package:bodo_app/blocs/auth/auth_state.dart';
 import 'package:bodo_app/repositories/auth_repository.dart';
 import 'package:bodo_app/screens/home/home_tab_screen.dart';
 
-const platform = const MethodChannel('app_channel');
+const platform = MethodChannel('app_channel');
 
 Future<void> moveTaskToBack(bool nonRoot) async {
   if (io.Platform.isAndroid) {
     try {
       await platform.invokeMethod('moveTaskToBack', {'nonRoot': nonRoot});
-    } on PlatformException catch (_) {
-
-    }
+    } on PlatformException catch (_) {}
   }
 }
 
@@ -29,9 +27,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseStorage.instance;
-
   final authRepository = AuthRepository();
-  
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -55,20 +52,35 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
       ),
-      home: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          if (state is AuthLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is AuthSuccess) {
-            return const HomeTabScreen();
-          } else if (state is AuthError) {
-            return Scaffold(
-              body: Center(
-                child: Text(state.error),
+      home: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: Colors.red,
               ),
             );
           }
+        },
+        builder: (context, state) {
+          if (state is AuthLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          
+          if (state is AuthSuccess) {
+            return const HomeTabScreen();
+          }
+          
           return const SplashScreen();
         },
       ),
