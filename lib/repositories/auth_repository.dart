@@ -89,44 +89,51 @@ class AuthRepository {
 
   Future<UserModel> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) throw 'Google sign in aborted';
+      await _googleSignIn.signOut();
+      
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) throw 'Sign in cancelled';
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await _auth.signInWithCredential(credential);
-      
-      // Check if user exists in Firestore
+      final userCredential = await _auth.signInWithCredential(credential);    
+      final user = userCredential.user;
+      if (user == null) throw 'Failed to sign in';
+
       final userDoc = await _firestore
           .collection('users')
-          .doc(userCredential.user!.uid)
+          .doc(user.uid)
           .get();
 
       if (!userDoc.exists) {
-        // Create new user document if doesn't exist
-        final user = UserModel(
-          id: userCredential.user!.uid,
-          email: userCredential.user!.email!,
-          name: userCredential.user!.displayName, // Get name from Google
+        final newUser = UserModel(
+          id: user.uid,
+          email: user.email!,
+          name: user.displayName,
           phone: null,
           createdAt: DateTime.now(),
         );
 
         await _firestore
             .collection('users')
-            .doc(user.id)
-            .set(user.toMap());
-
-        return user;
+            .doc(user.uid)
+            .set(newUser.toMap());
+        return newUser;
       }
 
       return UserModel.fromFirestore(userDoc);
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        throw 'Account exists with different sign in method';
+      }
+      throw e.message ?? 'Google sign in failed';
     } catch (e) {
-      throw 'Google sign in failed: $e';
+      throw 'Failed to sign in with Google';
     }
   }
 
