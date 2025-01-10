@@ -1,4 +1,7 @@
+import 'package:bodo_app/screens/post_ad/map_picker_screen.dart';
+import 'package:bodo_app/services/location_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,9 +27,25 @@ class _PostAdScreenState extends State<PostAdScreen> {
   List<File> _selectedImages = [];
   bool _isLoading = false;
   final _listingRepository = ListingRepository();
+  double? _latitude;
+  double? _longitude;
+  final _locationService = LocationService();
 
   static const int maxImageSize = 5 * 1024 * 1024; 
   static const int maxImages = 10;
+
+
+  Future<void> _getCurrentLocation() async {
+  try {
+    final position = await _locationService.getCurrentLocation();
+    setState(() {
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+    });
+  } catch (e) {
+    _showErrorSnackBar('Failed to get location: $e');
+  }
+}
 
 Future<void> _pickImages() async {
   try {
@@ -114,7 +133,9 @@ Future<void> _submitPost() async {
       price: price,
       location: _locationController.text.trim(),
       images: _selectedImages,
-      phone: _phoneController.text.trim(),// Add phone number to listing
+      phone: _phoneController.text.trim(),
+      latitude: _latitude,  
+      longitude: _longitude, 
     );
 
     if (!mounted) return;
@@ -436,33 +457,46 @@ bool _isValidPhoneNumber(String phone) {
 
               const SizedBox(height: 16),
 
-              // Location
-              TextFormField(
-                controller: _locationController,
-                enabled: !_isLoading,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the location';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'Location',
-                  hintText: 'Enter property location',
-                  labelStyle: TextStyle(color: Colors.grey.shade600),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _locationController,
+                      enabled: !_isLoading,
+                      decoration: InputDecoration(
+                        labelText: 'Location',
+                        hintText: 'Enter boarding location',
+                        prefixIcon: const Icon(Icons.location_on),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.map),
+                    onPressed: () async {
+                      final result = await Navigator.push<LatLng>(
+                        context,
+                        MaterialPageRoute(builder: (_) => const MapPickerScreen()),
+                      );
+                      
+                      if (result != null) {
+                        setState(() {
+                          _latitude = result.latitude;
+                          _longitude = result.longitude;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Location coordinates saved'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    },
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blue.shade300),
-                  ),
-                ),
+                ],
               ),
               const SizedBox(height: 16),
 
