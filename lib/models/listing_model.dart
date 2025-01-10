@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
+import 'package:geolocator/geolocator.dart'; 
 
 class ListingModel {
   final String id;
@@ -13,6 +14,9 @@ class ListingModel {
   final String userId;
   final List<String> images;
   final DateTime createdAt;
+  final double? latitude;
+  final double? longitude;
+  final double? distance;  
 
   static String toTitleCase(String text) {
     if (text.isEmpty) return text;
@@ -34,6 +38,9 @@ class ListingModel {
     required this.userId,
     required this.images,
     required this.createdAt,
+    this.latitude,   
+    this.longitude,    
+    this.distance,
   });
 
   factory ListingModel.fromFirestore(DocumentSnapshot doc) {
@@ -71,6 +78,9 @@ class ListingModel {
         userId: data['userId']?.toString() ?? '',
         images: images,
         createdAt: createdAt,
+        latitude: (data['latitude'] as num?)?.toDouble(),
+        longitude: (data['longitude'] as num?)?.toDouble(),
+        distance: null,
       );
     } catch (e) {
       print('Error parsing document ${doc.id}: $e');
@@ -78,6 +88,8 @@ class ListingModel {
       rethrow;
     }
   }
+
+  
 
   static bool isValidListing(Map<String, dynamic> data) {
     try {
@@ -117,6 +129,8 @@ class ListingModel {
     'userId': userId,
     'images': images,
     'createdAt': Timestamp.fromDate(createdAt),
+    'latitude': latitude,
+    'longitude': longitude,
   };
 
   ListingModel copyWith({
@@ -131,6 +145,9 @@ class ListingModel {
     String? userId,
     List<String>? images,
     DateTime? createdAt,
+    double? latitude,
+    double? longitude,
+    double? distance,
   }) {
     return ListingModel(
       id: id ?? this.id,
@@ -144,6 +161,9 @@ class ListingModel {
       userId: userId ?? this.userId,
       images: images ?? this.images,
       createdAt: createdAt ?? this.createdAt,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      distance: distance ?? this.distance,
     );
   }
 
@@ -157,6 +177,8 @@ class ListingModel {
     required String location,
     required String phone,
     required List<File> images,
+    double? latitude,
+    double? longitude,
     required Future<List<String>> Function(List<File> images, String userId) uploadImages,
   }) async {
     final imageUrls = await uploadImages(images, userId);
@@ -173,8 +195,13 @@ class ListingModel {
       phone: phone,
       images: imageUrls,
       createdAt: DateTime.now(),
+      latitude: latitude,
+      longitude: longitude,
+      distance: null,
     );
   }
+
+  
 
   static String? validateFields({
     required String title,
@@ -223,4 +250,17 @@ class ListingModel {
 
   @override
   String toString() => 'ListingModel(id: $id, title: $title, type: $type, price: $price, district: $district, location: $location)';
-}
+
+  ListingModel withDistance(double userLat, double userLng) {
+    if (latitude == null || longitude == null) return this;
+    
+    final distanceInMeters = Geolocator.distanceBetween(
+      userLat,
+      userLng,
+      latitude!,
+      longitude!,
+    );
+    
+    return copyWith(distance: distanceInMeters);
+  }
+}  
