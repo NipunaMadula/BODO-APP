@@ -1,6 +1,7 @@
 import 'package:bodo_app/models/listing_model.dart';
 import 'package:bodo_app/repositories/listing_repository.dart';
 import 'package:bodo_app/screens/home/listing_detail_screen.dart';
+import 'package:bodo_app/screens/home/nearby_listings_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -59,6 +60,18 @@ class _HomeScreenState extends State<HomeScreen> {
             fontWeight: FontWeight.w900,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.location_on,
+              color: Colors.black,
+            ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NearbyListingsScreen()),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
         elevation: 0,
       ),
