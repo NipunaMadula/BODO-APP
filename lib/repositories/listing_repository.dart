@@ -90,7 +90,6 @@ class ListingRepository {
     }
   }
 
-  // In ListingRepository class
   Future<List<ListingModel>> getAllListings() async {
     try {
       final snapshot = await _firestore
@@ -118,8 +117,8 @@ class ListingRepository {
     required String location,
     required List<File> images,
     required String phone,
-    double? latitude,    // Add these
-    double? longitude,   // parameters
+    double? latitude,
+    double? longitude,   
   }) async {
     List<String> uploadedUrls = [];
     try {
@@ -139,8 +138,8 @@ class ListingRepository {
         phone: phone,
         images: uploadedUrls,
         createdAt: DateTime.now(),
-        latitude: latitude,     // Add these
-        longitude: longitude,   // fields
+        latitude: latitude,   
+        longitude: longitude,  
       );
 
       print('Creating listing with uploaded images');
