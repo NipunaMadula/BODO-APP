@@ -90,6 +90,24 @@ class ListingRepository {
     }
   }
 
+  // In ListingRepository class
+  Future<List<ListingModel>> getAllListings() async {
+    try {
+      final snapshot = await _firestore
+          .collection('listings')
+          .orderBy('createdAt', descending: true)
+          .get();
+          
+      return snapshot.docs
+          .map((doc) => ListingModel.fromFirestore(doc))
+          .where((listing) => listing.latitude != null && listing.longitude != null)
+          .toList();
+    } catch (e) {
+      print('Error getting all listings: $e');
+      return [];
+    }
+  }
+
   Future<ListingModel> createListingWithImages({
     required String userId,
     required String title,
@@ -100,12 +118,14 @@ class ListingRepository {
     required String location,
     required List<File> images,
     required String phone,
+    double? latitude,    // Add these
+    double? longitude,   // parameters
   }) async {
     List<String> uploadedUrls = [];
     try {
-      print('Starting image upload for user: $userId'); // Debug 
+      print('Starting image upload for user: $userId');
       uploadedUrls = await uploadImages(images, userId);
-      print('Uploaded ${uploadedUrls.length} images'); // Debug log
+      print('Uploaded ${uploadedUrls.length} images');
       
       final listing = ListingModel(
         id: '',
@@ -119,14 +139,16 @@ class ListingRepository {
         phone: phone,
         images: uploadedUrls,
         createdAt: DateTime.now(),
+        latitude: latitude,     // Add these
+        longitude: longitude,   // fields
       );
 
-      print('Creating listing with uploaded images'); // Debug log
+      print('Creating listing with uploaded images');
       return await createListing(listing);
     } catch (e) {
       print('Error in createListingWithImages: $e');
       if (uploadedUrls.isNotEmpty) {
-        print('Cleaning up ${uploadedUrls.length} uploaded images'); // Debug log
+        print('Cleaning up ${uploadedUrls.length} uploaded images');
         await _cleanupFailedUploads(uploadedUrls);
       }
       rethrow;
