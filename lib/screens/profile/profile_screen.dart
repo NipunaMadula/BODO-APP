@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bodo_app/screens/authentication/login/login_screen.dart';
 import 'package:bodo_app/screens/profile/about_us_screen.dart';
 import 'package:bodo_app/screens/profile/help_center_screen.dart';
@@ -7,8 +9,10 @@ import 'package:bodo_app/screens/profile/privacy_policy_screen.dart';
 import 'package:bodo_app/screens/profile/user_reviews_screen.dart';
 import 'package:bodo_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,6 +29,115 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadUserData();
+  }
+
+  Future<void> _pickImage() async {
+  try {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+
+    if (image == null) return;
+
+    setState(() => _isLoading = true);
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('profile_pictures')
+        .child('${user.uid}.jpg');
+
+    await storageRef.putFile(File(image.path));
+    final imageUrl = await storageRef.getDownloadURL();
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .update({'profilePicture': imageUrl});
+
+    await _loadUserData();
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating profile picture: $e')),
+      );
+    }
+  } finally {
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
+  }
+}
+
+Future<void> _removeProfilePicture() async {
+  try {
+    setState(() => _isLoading = true);
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('profile_pictures')
+        .child('${user.uid}.jpg');
+    await storageRef.delete();
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .update({'profilePicture': null});
+
+    await _loadUserData();
+  } catch (e) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error removing profile picture: $e')),
+      );
+    }
+  } finally {
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
+  }
+}
+
+  void _showProfilePictureOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choose from Gallery'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage();
+              },
+            ),
+            if (_userModel?.profilePicture != null)
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text(
+                  'Remove Picture',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _removeProfilePicture();
+                },
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _loadUserData() async {
@@ -140,23 +253,52 @@ Future<void> _handleLogout(BuildContext context) async {
                     const SizedBox(height: 20),
                     
                     // Profile Image
-                    Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.blue.shade200,
-                          width: 2,
-                        ),
-                      ),
-                      child: CircleAvatar(
-                        radius: 45,
-                        backgroundColor: Colors.blue.shade50,
-                        child: Icon(
-                          Icons.person_outline,
-                          size: 45,
-                          color: Colors.blue.shade300,
-                        ),
+                    GestureDetector(
+                      onTap: () => _showProfilePictureOptions(),
+                      child: Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.blue.shade200,
+                                width: 2,
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 45,
+                              backgroundColor: Colors.blue.shade50,
+                              backgroundImage: _userModel?.profilePicture != null
+                                  ? NetworkImage(_userModel!.profilePicture!)
+                                  : null,
+                              child: _userModel?.profilePicture == null
+                                  ? Icon(
+                                      Icons.person_outline,
+                                      size: 45,
+                                      color: Colors.blue.shade300,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 2),
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     
