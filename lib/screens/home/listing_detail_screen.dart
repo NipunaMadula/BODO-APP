@@ -603,18 +603,23 @@ void _showContactOptions(BuildContext context) {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 55),
                 ],
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-      onPressed: () => _showContactOptions(context),
-      label: const Text('Contact Owner'),
-      icon: const Icon(Icons.message),
-      backgroundColor: Colors.lightBlueAccent,
+      floatingActionButton: SizedBox(
+        height: 43,
+        child: FloatingActionButton.extended(
+          onPressed: () => _showContactOptions(context),
+          label: const Text('Contact Owner'),
+          icon: const Icon(Icons.message),
+          backgroundColor: Colors.lightBlueAccent,
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
   
