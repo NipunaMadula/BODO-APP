@@ -6,6 +6,7 @@ class UserModel {
   final String? name;
   final String? phone;
   final DateTime createdAt;
+  final String? profilePicture; 
 
   UserModel({
     required this.id,
@@ -13,6 +14,7 @@ class UserModel {
     this.name,
     this.phone,
     required this.createdAt,
+    this.profilePicture,
   });
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
@@ -24,6 +26,7 @@ class UserModel {
         name: data['name'],
         phone: data['phone'],
         createdAt: (data['createdAt'] as Timestamp).toDate(),
+        profilePicture: data['profilePicture'],
       );
     } catch (e) {
       throw 'Error parsing user data: $e';
@@ -35,10 +38,11 @@ class UserModel {
     'name': name,
     'phone': phone,
     'createdAt': Timestamp.fromDate(createdAt),
+    'profilePicture': profilePicture,
   };
 
   @override
-  String toString() => 'UserModel(id: $id, email: $email, name: $name, phone: $phone, createdAt: $createdAt)';
+  String toString() => 'UserModel(id: $id, email: $email, name: $name, phone: $phone, createdAt: $createdAt, profilePicture: $profilePicture)';
 }
 
 extension UserModelExtension on UserModel {
@@ -48,6 +52,7 @@ extension UserModelExtension on UserModel {
     String? name,
     String? phone,
     DateTime? createdAt,
+    String? profilePicture,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -55,6 +60,7 @@ extension UserModelExtension on UserModel {
       name: name ?? this.name,
       phone: phone ?? this.phone,
       createdAt: createdAt ?? this.createdAt,
+      profilePicture: profilePicture ?? this.profilePicture, 
     );
   }
 }
