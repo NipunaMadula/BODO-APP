@@ -477,19 +477,20 @@ bool _isValidPhoneNumber(String phone) {
                   IconButton(
                     icon: const Icon(Icons.map),
                     onPressed: () async {
-                      final result = await Navigator.push<LatLng>(
+                      final result = await Navigator.push<LocationResult>(
                         context,
                         MaterialPageRoute(builder: (_) => const MapPickerScreen()),
                       );
                       
                       if (result != null) {
                         setState(() {
-                          _latitude = result.latitude;
-                          _longitude = result.longitude;
+                          _latitude = result.coordinates.latitude;
+                          _longitude = result.coordinates.longitude;
+                          _locationController.text = result.address; // Autofill the location text
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Location coordinates saved'),
+                            content: Text('Location saved'),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -527,7 +528,7 @@ bool _isValidPhoneNumber(String phone) {
                   }
                   return null;
                 },
-                items: ['Student', 'Professional', 'Mixed', 'Family']
+                items: ['Student', 'Boys Only', 'Girls Only',  'Professional', 'Family']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
