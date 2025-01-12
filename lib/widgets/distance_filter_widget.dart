@@ -12,43 +12,69 @@ class DistanceFilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(size.width * 0.04),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Distance',
+                'Search Radius',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade800,
+                  fontSize: size.width * 0.045,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              Text(
-                '${currentRadius.round()} km',
-                style: const TextStyle(
-                  color: Colors.lightBlueAccent,
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.03,
+                  vertical: size.width * 0.01,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(size.width * 0.02),
+                ),
+                child: Text(
+                  '${currentRadius.round()} km',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                    fontSize: size.width * 0.04,
+                  ),
                 ),
               ),
             ],
           ),
-          Slider(
-            value: currentRadius,
-            min: 1,
-            max: 50,
-            divisions: 49,
-            activeColor: Colors.lightBlueAccent,
-            label: '${currentRadius.round()} km',
-            onChanged: onRadiusChanged,
+          SizedBox(height: size.width * 0.02),
+          SliderTheme(
+            data: SliderThemeData(
+              thumbShape: RoundSliderThumbShape(
+                enabledThumbRadius: size.width * 0.03,
+              ),
+            ),
+            child: Slider(
+              value: currentRadius,
+              min: 1,
+              max: 50,
+              divisions: 49,
+              activeColor: Colors.blue,
+              label: '${currentRadius.round()} km',
+              onChanged: onRadiusChanged,
+            ),
           ),
         ],
       ),
