@@ -90,7 +90,6 @@ class ListingModel {
   }
 
   
-
   static bool isValidListing(Map<String, dynamic> data) {
     try {
       if (data['title']?.toString().isEmpty ?? true) return false;
@@ -202,7 +201,6 @@ class ListingModel {
   }
 
   
-
   static String? validateFields({
     required String title,
     required String description,
