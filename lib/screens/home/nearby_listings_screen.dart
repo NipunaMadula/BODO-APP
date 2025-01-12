@@ -74,47 +74,111 @@ class _NearbyListingsScreenState extends State<NearbyListingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Nearby Listings',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 25,
+            fontSize: size.width * 0.06,
             fontWeight: FontWeight.w500,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(_showMap ? Icons.list : Icons.map),
+            icon: Icon(
+              _showMap ? Icons.list : Icons.map,
+              size: size.width * 0.06,
+            ),
             onPressed: () => setState(() => _showMap = !_showMap),
           ),
         ],
       ),
       body: _isLoading 
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                DistanceFilterWidget(
-                  currentRadius: _searchRadius,
-                  onRadiusChanged: (value) {
-                    setState(() => _searchRadius = value);
-                    _loadNearbyListings();
-                  },
-                ),
-                Expanded(
-                  child: _showMap
-                      ? _buildMap()
-                      : _buildListView(),
-                ),
-              ],
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+            children: [
+              // Distance Filter
+              DistanceFilterWidget(
+                currentRadius: _searchRadius,
+                onRadiusChanged: (value) {
+                  setState(() => _searchRadius = value);
+                  _loadNearbyListings();
+                },
+              ),
+
+              // Listings or Map
+              Expanded(
+                child: _showMap ? _buildMap() : _buildListView(),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildListView() {
+    final size = MediaQuery.of(context).size;
+
+    if (_nearbyListings.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.location_off,
+              size: size.width * 0.15,
+              color: Colors.grey,
             ),
+            SizedBox(height: size.width * 0.04),
+            Text(
+              'No listings found nearby',
+              style: TextStyle(
+                fontSize: size.width * 0.045,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.all(size.width * 0.04),
+      itemCount: _nearbyListings.length,
+      itemBuilder: (context, index) {
+        final listing = _nearbyListings[index];
+        final distance = Geolocator.distanceBetween(
+          _userLocation!.latitude,
+          _userLocation!.longitude,
+          listing.latitude!,
+          listing.longitude!,
+        );
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: size.width * 0.03),
+          child: ListingCard(
+            listing: listing,
+            distance: distance,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ListingDetailScreen(listing: listing),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildMap() {
     if (_userLocation == null) {
-      return const Center(child: Text('Location not available'));
+      return const Center(
+        child: Text('Location not available'),
+      );
     }
 
     return GoogleMap(
@@ -158,39 +222,6 @@ class _NearbyListingsScreenState extends State<NearbyListingsScreen> {
           strokeColor: Colors.blue,
           strokeWidth: 1,
         ),
-      },
-    );
-  }
-
-  Widget _buildListView() {
-    if (_nearbyListings.isEmpty) {
-      return const Center(
-        child: Text('No listings found nearby'),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _nearbyListings.length,
-      itemBuilder: (context, index) {
-        final listing = _nearbyListings[index];
-        final distance = Geolocator.distanceBetween(
-          _userLocation!.latitude,
-          _userLocation!.longitude,
-          listing.latitude!,
-          listing.longitude!,
-        );
-
-        return ListingCard(
-          listing: listing,
-          distance: distance,
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ListingDetailScreen(listing: listing),
-            ),
-          ),
-        );
       },
     );
   }
