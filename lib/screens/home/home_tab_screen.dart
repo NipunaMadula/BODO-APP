@@ -1,3 +1,4 @@
+import 'package:bodo_app/screens/Location/SearchByLocationScreen.dart';
 import 'package:bodo_app/screens/saved_items/saved_items_screen.dart';
 import 'package:bodo_app/screens/authentication/login/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
+    SearchByLocationScreen(),
     const PostAdScreen(),
     SavedItemsScreen(),
     const ProfileScreen(),
@@ -113,6 +115,7 @@ Widget build(BuildContext context) {
             elevation: 0,
             items: [
               _buildNavItem(Icons.home_outlined, Icons.home, 'Home'),
+              _buildNavItem(Icons.location_on_outlined, Icons.location_on, 'Search'), 
               _buildNavItem(Icons.add_circle_outline, Icons.add_circle, 'Post Ad'),
               _buildNavItem(Icons.bookmark_border, Icons.bookmark, 'Saved'),
               _buildNavItem(Icons.person_outline, Icons.person, 'Profile'),
