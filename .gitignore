@@ -20,8 +20,8 @@ migrate_working_dir/
 #.vscode/
 
 # Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+/doc/api/
+/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -55,51 +55,3 @@ lib/firebase_options.dart
 # Other OS-specific files (Windows, Linux, etc.)
 Thumbs.db
 ehthumbs.db
-
-# CMake build files
-**/CMakeFiles/
-**/CMakeCache.txt
-**/cmake_install.cmake
-**/CMakeLists.txt
-**/CmakeSystem.cmake
-**/CMakeScripts/
-**/CMakeTmp/
-**/CMakeOutput.log
-**/CMakeError.log
-**/CMakeCompilerid*
-
-# Additional Android build artifacts
-**/android/.gradle/
-**/android/gradle/
-**/android/gradlew
-**/android/gradlew.bat
-**/android/local.properties
-**/android/app/gradle/
-**/android/app/.cxx/
-**/android/app/build/
-**/android/build/
-**/android/captures/
-**/android/**.apk
-**/android/key.properties
-**/android/app/debug/
-**/android/app/profile/
-**/android/app/release/
-
-# Build files appearing in your changes
-**/android/app/**/Debug/
-**/cache-v2*
-**/build_file_index.txt
-**/hash_key.txt
-**/metadata_generation_command.txt
-**/symbol_folder_index.txt
-**/additional_project_files.txt
-**/configure_fingerprint.bin
-**/build.ninja
-**/rules.ninja
-**/TargetDirectories.txt
-**/codemodel-v2*
-**/directory-*-Debug-*
-**/index-*
-
-# Firebase
-**/firebase_options.dart
