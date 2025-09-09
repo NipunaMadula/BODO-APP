@@ -10,6 +10,9 @@
         android:label="bodo_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCQUF13l9suA21xYr8nf0KQH93b-F133-0" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
