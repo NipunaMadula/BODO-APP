@@ -302,7 +302,9 @@ void _showContactOptions(BuildContext context) {
                 )),
                 const SizedBox(width: 8),
                 Text(
-                  review.userName,
+                  review.userName.contains('@')
+                      ? review.userName.split('@').first
+                      : review.userName.split(' ').first,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
