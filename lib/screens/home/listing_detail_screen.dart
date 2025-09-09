@@ -191,12 +191,17 @@ void _showContactOptions(BuildContext context) {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) => IconButton(
-                  icon: Icon(
-                    index < _selectedRating ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(5, (index) => GestureDetector(
+                  onTap: () => setState(() => _selectedRating = index + 1),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Icon(
+                      index < _selectedRating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 30,
+                    ),
                   ),
-                  onPressed: () => setState(() => _selectedRating = index + 1),
                 )),
               ),
               TextField(
