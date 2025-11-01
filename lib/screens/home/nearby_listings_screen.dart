@@ -53,22 +53,36 @@ class _NearbyListingsScreenState extends State<NearbyListingsScreen> {
 
 
   Future<void> _loadNearbyListings() async {
-    if (_userLocation == null) return;
+    if (_userLocation == null) {
+      print('User location is null. Cannot load nearby listings.');
+      setState(() => _nearbyListings = []);
+      return;
+    }
 
     final allListings = await _listingRepository.getAllListings();
+    print('Total listings fetched: [32m${allListings.length}[0m');
+    int missingCoords = 0;
+    int outOfRadius = 0;
     final nearbyListings = allListings.where((listing) {
-      if (listing.latitude == null || listing.longitude == null) return false;
-      
+      if (listing.latitude == null || listing.longitude == null) {
+        missingCoords++;
+        return false;
+      }
       final distance = Geolocator.distanceBetween(
         _userLocation!.latitude,
         _userLocation!.longitude,
         listing.latitude!,
         listing.longitude!,
       );
-      
-      return distance <= _searchRadius * 1000; // Convert km to meters
+      if (distance > _searchRadius * 1000) {
+        outOfRadius++;
+        return false;
+      }
+      return true;
     }).toList();
-
+    print('Listings missing coordinates: [33m$missingCoords[0m');
+    print('Listings out of radius: [33m$outOfRadius[0m');
+    print('Nearby listings found: [32m${nearbyListings.length}[0m');
     setState(() => _nearbyListings = nearbyListings);
   }
 
@@ -139,6 +153,12 @@ class _NearbyListingsScreenState extends State<NearbyListingsScreen> {
                 color: Colors.grey[600],
                 fontWeight: FontWeight.w500,
               ),
+            ),
+            SizedBox(height: size.width * 0.03),
+            Text(
+              'Possible reasons:\n• No listings in your area\n• Listings missing location data\n• Location permission not granted\n• Search radius too small',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: size.width * 0.04, color: Colors.grey),
             ),
           ],
         ),
