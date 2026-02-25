@@ -17,6 +17,7 @@ class ListingModel {
   final double? latitude;
   final double? longitude;
   final double? distance;  
+  final bool available;
 
   static String toTitleCase(String text) {
     if (text.isEmpty) return text;
@@ -41,7 +42,8 @@ class ListingModel {
     this.latitude,   
     this.longitude,    
     this.distance,
-  });
+    bool? available,
+    }) : available = available ?? true;
 
   factory ListingModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -81,6 +83,7 @@ class ListingModel {
         latitude: (data['latitude'] as num?)?.toDouble(),
         longitude: (data['longitude'] as num?)?.toDouble(),
         distance: null,
+        available: (data['available'] as bool?) ?? true,
       );
     } catch (e) {
       print('Error parsing document ${doc.id}: $e');
@@ -130,6 +133,7 @@ class ListingModel {
     'createdAt': Timestamp.fromDate(createdAt),
     'latitude': latitude,
     'longitude': longitude,
+    'available': available,
   };
 
   ListingModel copyWith({
@@ -147,6 +151,7 @@ class ListingModel {
     double? latitude,
     double? longitude,
     double? distance,
+    bool? available,
   }) {
     return ListingModel(
       id: id ?? this.id,
@@ -163,6 +168,7 @@ class ListingModel {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       distance: distance ?? this.distance,
+      available: available ?? this.available,
     );
   }
 
@@ -179,6 +185,7 @@ class ListingModel {
     double? latitude,
     double? longitude,
     required Future<List<String>> Function(List<File> images, String userId) uploadImages,
+    bool available = true,
   }) async {
     final imageUrls = await uploadImages(images, userId);
     
@@ -197,6 +204,7 @@ class ListingModel {
       latitude: latitude,
       longitude: longitude,
       distance: null,
+      available: available,
     );
   }
 

@@ -278,11 +278,11 @@ Widget _buildListingCard(ListingModel listing) {
                       vertical: isTablet ? 5 : 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: listing.available ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'Available',
+                      listing.available ? 'Available' : 'Not available',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: isTablet ? 12 : 10,

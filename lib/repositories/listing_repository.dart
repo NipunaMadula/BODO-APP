@@ -119,6 +119,7 @@ class ListingRepository {
     required String phone,
     double? latitude,
     double? longitude,   
+    bool available = true,
   }) async {
     List<String> uploadedUrls = [];
     try {
@@ -140,6 +141,7 @@ class ListingRepository {
         createdAt: DateTime.now(),
         latitude: latitude,   
         longitude: longitude,  
+        available: available,
       );
 
       print('Creating listing with uploaded images');

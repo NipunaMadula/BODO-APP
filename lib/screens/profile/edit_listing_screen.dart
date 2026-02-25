@@ -27,6 +27,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
   List<String> _existingImages = [];
   List<File> _newImages = [];
   bool _isLoading = false;
+  bool _isAvailable = true;
   final _listingRepository = ListingRepository();
 
   final List<String> _districts = [
@@ -60,6 +61,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     _selectedPropertyType = widget.listing.type;
     _selectedDistrict = _getValidDistrict(widget.listing.district);
     _existingImages = List.from(widget.listing.images);
+    _isAvailable = widget.listing.available;
   }
 
   Future<void> _pickImages() async {
@@ -151,6 +153,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
           'district': _selectedDistrict,
           'phone': phone,
           'images': allImages,
+          'available': _isAvailable,
         },
       );
 
@@ -437,6 +440,18 @@ class _EditListingScreenState extends State<EditListingScreen> {
                 return null;
               },
             ),
+
+              const SizedBox(height: 16),
+
+              SwitchListTile(
+                title: const Text('Available'),
+                value: _isAvailable,
+                onChanged: (v) => setState(() => _isAvailable = v),
+                secondary: Icon(
+                  _isAvailable ? Icons.check_circle : Icons.block,
+                  color: _isAvailable ? Colors.green : Colors.red,
+                ),
+              ),
 
             const SizedBox(height: 24),
 

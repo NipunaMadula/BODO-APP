@@ -23,10 +23,10 @@ Future<void> moveTaskToBack(bool nonRoot) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+    await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseStorage.instance;
+    FirebaseStorage.instance;
   final authRepository = AuthRepository();
 
   runApp(

@@ -26,6 +26,7 @@ class _PostAdScreenState extends State<PostAdScreen> {
   String? _selectedPropertyType;
   List<File> _selectedImages = [];
   bool _isLoading = false;
+  bool _isAvailable = true;
   final _listingRepository = ListingRepository();
   double? _latitude;
   double? _longitude;
@@ -136,6 +137,7 @@ Future<void> _submitPost() async {
       phone: _phoneController.text.trim(),
       latitude: _latitude,  
       longitude: _longitude, 
+      available: _isAvailable,
     );
 
     if (!mounted) return;
@@ -616,6 +618,15 @@ bool _isValidPhoneNumber(String phone) {
                 ),
               ),
               const SizedBox(height: 24),
+              SwitchListTile(
+                title: const Text('Available'),
+                value: _isAvailable,
+                onChanged: _isLoading ? null : (v) => setState(() => _isAvailable = v),
+                secondary: Icon(
+                  _isAvailable ? Icons.check_circle : Icons.block,
+                  color: _isAvailable ? Colors.green : Colors.red,
+                ),
+              ),
 
               // Post Button
               SizedBox(

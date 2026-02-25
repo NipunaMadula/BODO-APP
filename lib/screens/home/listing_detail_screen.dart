@@ -421,12 +421,12 @@ void _showContactOptions(BuildContext context) {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: widget.listing.available ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Text(
-                      'Available',
-                      style: TextStyle(
+                    child: Text(
+                      widget.listing.available ? 'Available' : 'Not available',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
