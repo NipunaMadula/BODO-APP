@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /payments/{paymentId} {
+      // allow authenticated users to create a payment; ensure required fields and payerId matches caller
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['listingId','listingOwnerId','payerId','payerName','amount','method','status'])
+        && request.resource.data.listingId is string
+        && request.resource.data.listingOwnerId is string
+        && request.resource.data.payerId == request.auth.uid
+        && request.resource.data.payerName is string
+        && request.resource.data.amount is number;
+
+      // allow reads only to the listing owner or the payer
+      allow read: if request.auth != null
+        && (resource.data.listingOwnerId == request.auth.uid || resource.data.payerId == request.auth.uid);
+
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
