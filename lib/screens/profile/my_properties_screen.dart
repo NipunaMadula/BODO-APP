@@ -1,5 +1,7 @@
 import 'package:bodo_app/screens/home/listing_detail_screen.dart';
 import 'package:bodo_app/screens/profile/edit_listing_screen.dart';
+import 'package:bodo_app/screens/profile/rate_user_screen.dart';
+import 'package:bodo_app/screens/payments/payments_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bodo_app/models/listing_model.dart';
@@ -208,6 +210,26 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                       ],
                     ),
                   ),
+                  PopupMenuItem(
+                    value: 'rate_user',
+                    child: const Row(
+                      children: [
+                        Icon(Icons.rate_review),
+                        SizedBox(width: 8),
+                        Text('Rate User'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'view_payments',
+                    child: const Row(
+                      children: [
+                        Icon(Icons.payment),
+                        SizedBox(width: 8),
+                        Text('View Payments'),
+                      ],
+                    ),
+                  ),
                 ],
                 onSelected: (value) {
                   switch (value) {
@@ -221,6 +243,18 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
                       break;
                     case 'delete':
                       _showDeleteDialog(context, listing);
+                      break;
+                    case 'rate_user':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => RateUserScreen(listingId: listing.id)),
+                      );
+                      break;
+                    case 'view_payments':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => PaymentsListScreen(listingId: listing.id)),
+                      );
                       break;
                   }
                 },

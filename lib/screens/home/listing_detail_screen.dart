@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
+import 'package:bodo_app/repositories/payment_repository.dart';
+import 'package:bodo_app/screens/payments/payment_checkout_screen.dart';
 class ListingDetailScreen extends StatefulWidget {
   final ListingModel listing;
   
@@ -259,6 +261,8 @@ void _showContactOptions(BuildContext context) {
       ),
     );
   }
+
+  
 
   Widget _buildReviewsList() {
     return StreamBuilder<List<ReviewModel>>(
@@ -594,6 +598,30 @@ void _showContactOptions(BuildContext context) {
                   ),
                   const SizedBox(height: 16),
                   _buildReviewsList(),
+                  const SizedBox(height: 8),
+                  // Pay Advance button (opens checkout UI)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) =>
+                            // lazy import to avoid cycle
+                            ((){
+                              return PaymentCheckoutScreen(
+                                listingId: widget.listing.id,
+                                listingOwnerId: widget.listing.userId,
+                                amount: widget.listing.price,
+                              );
+                            })()
+                        ),
+                      ),
+                      icon: const Icon(Icons.payment),
+                      label: const Text('Pay Advance'),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => _showAddReviewDialog(context),
