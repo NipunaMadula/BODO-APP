@@ -46,6 +46,12 @@ class _EditListingScreenState extends State<EditListingScreen> {
     return _districts.contains(district) ? district : null;
   }
 
+  // Add validation helper for property type
+  String? _getValidPropertyType(String? type) {
+    if (type == null) return null;
+    return _propertyTypes.contains(type) ? type : null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +64,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     _locationController.text = widget.listing.location;
     _descriptionController.text = widget.listing.description;
     _phoneController.text = widget.listing.phone;
-    _selectedPropertyType = widget.listing.type;
+    _selectedPropertyType = _getValidPropertyType(widget.listing.type);
     _selectedDistrict = _getValidDistrict(widget.listing.district);
     _existingImages = List.from(widget.listing.images);
     _isAvailable = widget.listing.available;
