@@ -130,7 +130,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
         payerId: user.uid,
         payerName: _nameCtrl.text.trim().isEmpty ? (user.email ?? 'Anonymous') : _nameCtrl.text.trim(),
         amount: widget.amount,
-        method: 'card (dummy)',
+        method: 'card',
         status: 'completed',
       );
 
