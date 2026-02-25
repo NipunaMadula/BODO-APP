@@ -2,6 +2,7 @@ import 'package:bodo_app/screens/home/listing_detail_screen.dart';
 import 'package:bodo_app/screens/profile/edit_listing_screen.dart';
 import 'package:bodo_app/screens/profile/rate_user_screen.dart';
 import 'package:bodo_app/screens/payments/payments_list_screen.dart';
+import 'package:bodo_app/screens/payments/owner_payments_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bodo_app/models/listing_model.dart';
@@ -34,6 +35,15 @@ class _MyPropertiesScreenState extends State<MyPropertiesScreen> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
+        actions: [
+          IconButton(
+            tooltip: 'View received payments',
+            icon: const Icon(Icons.receipt_long),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const OwnerPaymentsScreen()));
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<List<ListingModel>>(
         stream: _listingRepository.getListingsByUserId(userId),

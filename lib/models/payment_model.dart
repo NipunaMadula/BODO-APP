@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
 class PaymentModel {
   final String id;
@@ -38,7 +39,24 @@ class PaymentModel {
     );
   }
 
+  factory PaymentModel.fromMap(Map<String, dynamic> d) {
+    return PaymentModel(
+      id: d['id']?.toString() ?? (DateTime.now().millisecondsSinceEpoch.toString()),
+      listingId: d['listingId'] ?? '',
+      listingOwnerId: d['listingOwnerId'] ?? '',
+      payerId: d['payerId'] ?? '',
+      payerName: d['payerName'] ?? '',
+      amount: (d['amount'] as num?)?.toDouble() ?? 0.0,
+      method: d['method'] ?? 'card (dummy)',
+      status: d['status'] ?? 'completed',
+      createdAt: d['createdAt'] is String
+          ? DateTime.parse(d['createdAt'])
+          : DateTime.fromMillisecondsSinceEpoch((d['createdAt'] as int?) ?? DateTime.now().millisecondsSinceEpoch),
+    );
+  }
+
   Map<String, dynamic> toMap() => {
+        'id': id,
         'listingId': listingId,
         'listingOwnerId': listingOwnerId,
         'payerId': payerId,
@@ -46,6 +64,6 @@ class PaymentModel {
         'amount': amount,
         'method': method,
         'status': status,
-        'createdAt': FieldValue.serverTimestamp(),
+        'createdAt': createdAt.toIso8601String(),
       };
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:bodo_app/repositories/payment_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -94,7 +95,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
   }
 
   bool _expiryValid(String v) {
-    if (!RegExp(r'^(0[1-9]|1[0-2])\/[0-9]{2}\$').hasMatch(v)) return false;
+    if (!RegExp(r'^(0[1-9]|1[0-2])\/[0-9]{2}$').hasMatch(v)) return false;
     final parts = v.split('/');
     final mm = int.parse(parts[0]);
     final yy = int.parse(parts[1]);
@@ -134,7 +135,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment recorded (dummy)')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Payment recorded successfully')));
         Navigator.pop(context);
       }
     } catch (e) {
@@ -162,11 +163,14 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
                   TextFormField(
                     controller: _cardNumberCtrl,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Card Number', hintText: '4242 4242 4242 4242'),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(16),
+                    ],
+                    decoration: const InputDecoration(labelText: 'Card Number'),
                     validator: (v) {
-                      final s = v?.replaceAll(' ', '') ?? '';
-                      if (s.length < 12) return 'Enter valid card number';
-                      if (!_luhnCheck(v ?? '')) return 'Invalid card number';
+                      final digits = (v ?? '').replaceAll(RegExp(r'[^0-9]'), '');
+                      if (digits.length != 16) return 'Enter 16 digit card number';
                       return null;
                     },
                   ),
@@ -178,9 +182,12 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
                           controller: _expiryCtrl,
                           decoration: const InputDecoration(labelText: 'MM/YY'),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(4),
+                          ],
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty) return 'Enter expiry';
-                            if (!_expiryValid(v.trim())) return 'Invalid expiry';
+                            if (v == null || !_expiryValid(v.trim())) return 'Enter a valid expiry MM/YY';
                             return null;
                           },
                         ),
@@ -192,9 +199,13 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen> {
                           controller: _cvcCtrl,
                           decoration: const InputDecoration(labelText: 'CVC'),
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(3),
+                          ],
                           validator: (v) {
-                            if (v == null || !(v.trim().length == 3 || v.trim().length == 4)) return 'Enter 3 or 4 digit CVC';
-                            if (!RegExp(r'^\d{3,4}\$').hasMatch(v.trim())) return 'Invalid CVC';
+                            final digits = (v ?? '').replaceAll(RegExp(r'[^0-9]'), '');
+                            if (digits.length != 3) return 'Enter 3 digit CVC';
                             return null;
                           },
                         ),
